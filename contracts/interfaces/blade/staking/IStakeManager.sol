@@ -10,7 +10,6 @@ struct Validator {
 
 struct GenesisValidator {
     address addr;
-    uint256 stake;
     uint256[4] blsKey;
 }
 
@@ -45,7 +44,7 @@ interface IStakeManager {
 
     function whitelistValidators(address[] calldata validators_) external;
 
-    function register(uint256[2] calldata signature, uint256[4] calldata pubkey, uint256 stakeAmount) external;
+    function register(uint256[2] calldata signature, uint256[4] calldata pubkey) external;
 
     function getValidator(address validator_) external view returns (Validator memory);
 

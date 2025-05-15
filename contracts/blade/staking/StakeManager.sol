@@ -14,6 +14,8 @@ import "../../lib/WithdrawalQueue.sol";
 import "../../blade/NetworkParams.sol";
 
 contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
+    uint256 private constant defaultStakeAmount = 1;
+
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
 
@@ -62,7 +64,8 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         for (uint i = 0; i < genesisValidators.length; i++) {
             GenesisValidator memory validator = genesisValidators[i];
             validators[validator.addr] = Validator(validator.addr, validator.blsKey, true, true);
-            _stake(validator.addr, validator.stake);
+            // set stake to default amount
+            _stake(validator.addr, defaultStakeAmount);
         }
         _transferOwnership(owner);
     }
@@ -71,14 +74,15 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
      * @inheritdoc IStakeManager
      */
     function stake(uint256 amount) external onlyValidator(msg.sender) {
-        _stake(msg.sender, amount);
+        // do not allow additional staking! _stake(msg.sender, amount);
     }
 
     /**
      * @inheritdoc IStakeManager
      */
     function unstake(uint256 amount) external onlyValidator(msg.sender) {
-        _unstake(msg.sender, amount);
+        // do not allow additional unstaking!_unstake(msg.sender, amount);
+        // validator can not unregister himself!
     }
 
     /**
@@ -108,18 +112,19 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
-    function register(uint256[2] calldata signature, uint256[4] calldata pubkey, uint256 stakeAmount) external {
-        Validator storage validator = validators[msg.sender];
-        if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
-        _verifyValidatorRegistration(msg.sender, signature, pubkey);
-        validator.isActive = true;
-        validator.blsKey = pubkey;
-        validator.addr = msg.sender;
-        _removeFromWhitelist(msg.sender);
-        if (stakeAmount > 0) {
-            _stake(msg.sender, stakeAmount);
-        }
-        emit ValidatorRegistered(msg.sender, pubkey, stakeAmount);
+    function register(uint256[2] calldata /*signature*/, uint256[4] calldata /*pubkey*/) external pure {
+        // currently there validator set changing is not supported
+        // Validator storage validator = validators[msg.sender];
+        // if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
+        // if (validator.isActive) revert("ALREADY REGISTERED");
+        // _verifyValidatorRegistration(msg.sender, signature, pubkey);
+        // validator.isActive = true;
+        // validator.blsKey = pubkey;
+        // validator.addr = msg.sender;
+        // _removeFromWhitelist(msg.sender);
+        // _stake(msg.sender, defaultStakeAmount);
+        // emit ValidatorRegistered(msg.sender, pubkey, defaultStakeAmount);
+        revert("CURRENTLY NOT AVAILABLE");
     }
 
     /**
