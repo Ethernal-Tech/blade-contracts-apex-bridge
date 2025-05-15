@@ -117,7 +117,6 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         // validator set changing is not supported currently!
         // Validator storage validator = validators[msg.sender];
         // if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
-        // if (validator.isActive) revert("ALREADY REGISTERED");
         // _verifyValidatorRegistration(msg.sender, signature, pubkey);
         // validator.isActive = true;
         // validator.blsKey = pubkey;
