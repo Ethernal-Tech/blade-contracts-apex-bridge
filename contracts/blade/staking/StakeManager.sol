@@ -64,8 +64,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         for (uint i = 0; i < genesisValidators.length; i++) {
             GenesisValidator memory validator = genesisValidators[i];
             validators[validator.addr] = Validator(validator.addr, validator.blsKey, true, true);
-            // set stake to default amount
-            _stake(validator.addr, defaultStakeAmount);
+            _stake(validator.addr, defaultStakeAmount); // validator stake must be set to default amount
         }
         _transferOwnership(owner);
     }
@@ -112,8 +111,10 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
-    function register(uint256[2] calldata /*signature*/, uint256[4] calldata /*pubkey*/) external pure {
-        // currently there validator set changing is not supported
+    function register(uint256[2] calldata signature, uint256[4] calldata pubkey) external pure {
+        signature;
+        pubkey; // Explicitly reference to suppress warnings
+        // validator set changing is not supported currently!
         // Validator storage validator = validators[msg.sender];
         // if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
         // if (validator.isActive) revert("ALREADY REGISTERED");
