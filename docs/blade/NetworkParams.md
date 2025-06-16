@@ -510,6 +510,22 @@ function votingPeriod() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### whiteListNewValidator
+
+```solidity
+function whiteListNewValidator(address validator) external nonpayable
+```
+
+function to emit an event that allows whitelist
+
+*disallows setting of a zer*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validator | address | address for whitelisting |
+
 ### withdrawalWaitPeriod
 
 ```solidity
@@ -706,6 +722,22 @@ event NewSprintSize(uint256 indexed size)
 | Name | Type | Description |
 |---|---|---|
 | size `indexed` | uint256 | undefined |
+
+### NewValidatorWhitelist
+
+```solidity
+event NewValidatorWhitelist(address indexed validator)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validator `indexed` | address | undefined |
 
 ### NewVotingDelay
 

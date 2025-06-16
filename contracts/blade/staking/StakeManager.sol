@@ -15,6 +15,7 @@ import "../../blade/NetworkParams.sol";
 
 contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
     uint256 private constant defaultStakeAmount = 1;
+    uint256 private constant defaultMintAmount = 10;
 
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
@@ -73,15 +74,16 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
      * @inheritdoc IStakeManager
      */
     function stake(uint256 amount) external onlyValidator(msg.sender) {
-        // do not allow additional staking! _stake(msg.sender, amount);
+        // staking additional tokens is not possible, so we are only reverting because of this
+        revert("STAKING ADDITIONAL TOKENS IS NOT POSSIBLE");
     }
 
     /**
      * @inheritdoc IStakeManager
      */
     function unstake(uint256 amount) external onlyValidator(msg.sender) {
-        // do not allow additional unstaking!_unstake(msg.sender, amount);
         // validator can not unregister himself!
+        revert("VALIDATOR CAN NOT UNREGISTER HIMSELF");
     }
 
     /**
@@ -101,7 +103,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
-    function whitelistValidators(address[] calldata validators_) external onlyOwner {
+    function whitelistValidators(address[] calldata validators_) external onlyValidator(msg.sender) {
         uint256 length = validators_.length;
         for (uint256 i = 0; i < length; i++) {
             _addToWhitelist(validators_[i]);
@@ -111,20 +113,16 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
-    function register(uint256[2] calldata signature, uint256[4] calldata pubkey) external pure {
-        signature;
-        pubkey; // Explicitly reference to suppress warnings
-        // validator set changing is not supported currently!
-        // Validator storage validator = validators[msg.sender];
-        // if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
-        // _verifyValidatorRegistration(msg.sender, signature, pubkey);
-        // validator.isActive = true;
-        // validator.blsKey = pubkey;
-        // validator.addr = msg.sender;
-        // _removeFromWhitelist(msg.sender);
-        // _stake(msg.sender, defaultStakeAmount);
-        // emit ValidatorRegistered(msg.sender, pubkey, defaultStakeAmount);
-        revert("CURRENTLY NOT AVAILABLE");
+    function register(uint256[2] calldata signature, uint256[4] calldata pubkey) external {
+        Validator storage validator = validators[msg.sender];
+        if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
+        _verifyValidatorRegistration(msg.sender, signature, pubkey);
+        validator.isActive = true;
+        validator.blsKey = pubkey;
+        validator.addr = msg.sender;
+        _removeFromWhitelist(msg.sender);
+        _stake(msg.sender, defaultStakeAmount);
+        emit ValidatorRegistered(msg.sender, pubkey, defaultStakeAmount);
     }
 
     /**
@@ -172,6 +170,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
     function _addToWhitelist(address validator) internal {
         validators[validator].isWhitelisted = true;
+        _mint(validator, defaultMintAmount);
         emit AddedToWhitelist(validator);
     }
 

@@ -601,7 +601,7 @@ function permit(address owner, address spender, uint256 value, uint256 deadline,
 ### register
 
 ```solidity
-function register(uint256[2] signature, uint256[4] pubkey) external pure
+function register(uint256[2] signature, uint256[4] pubkey) external nonpayable
 ```
 
 
