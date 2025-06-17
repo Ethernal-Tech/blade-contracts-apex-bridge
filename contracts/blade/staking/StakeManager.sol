@@ -82,8 +82,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
      * @inheritdoc IStakeManager
      */
     function unstake(uint256 amount) external onlyValidator(msg.sender) {
-        // validator can not unregister himself!
-        revert("VALIDATOR CAN NOT UNREGISTER HIMSELF");
+        _unstake(msg.sender, defaultStakeAmount);
     }
 
     /**
