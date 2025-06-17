@@ -89,6 +89,22 @@ function checkpointBlockInterval() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### commitNewValidator
+
+```solidity
+function commitNewValidator(address validator) external nonpayable
+```
+
+function to emit an event that allows commiting new validator set
+
+*disallows setting of a zer*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validator | address | address of new validator |
+
 ### epochReward
 
 ```solidity
@@ -546,6 +562,22 @@ function withdrawalWaitPeriod() external view returns (uint256)
 
 
 ## Events
+
+### CommitNewValidator
+
+```solidity
+event CommitNewValidator(address indexed validator)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validator `indexed` | address | undefined |
 
 ### Initialized
 
