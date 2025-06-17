@@ -97,7 +97,7 @@ function commitNewValidator(address validator) external nonpayable
 
 function to emit an event that allows commiting new validator set
 
-*disallows setting of a zer*
+*disallows emit of a zero*
 
 #### Parameters
 
@@ -534,7 +534,7 @@ function whiteListNewValidator(address validator) external nonpayable
 
 function to emit an event that allows whitelist
 
-*disallows setting of a zer*
+*disallows emit of a zero*
 
 #### Parameters
 

@@ -250,22 +250,22 @@ contract NetworkParams is Ownable2Step, Initializable {
 
     /**
      * @notice function to emit an event that allows whitelist
-     * @dev disallows setting of a zer
+     * @dev disallows emit of a zero
      * @param validator address for whitelisting
      */
     function whiteListNewValidator(address validator) external onlyOwner {
-        require(validator != address(0));
+        require(validator != address(0), "ADDRESS IS ZERO");
 
         emit NewValidatorWhitelist(validator);
     }
 
     /**
      * @notice function to emit an event that allows commiting new validator set
-     * @dev disallows setting of a zer
+     * @dev disallows emit of a zero
      * @param validator address of new validator
      */
     function commitNewValidator(address validator) external onlyOwner {
-        require(validator != address(0));
+        require(validator != address(0), "ADDRESS IS ZERO");
 
         emit CommitNewValidator(validator);
     }
