@@ -56,6 +56,7 @@ contract NetworkParams is Ownable2Step, Initializable {
     event NewProposalThreshold(uint256 indexed proposalThreshold);
     event NewBaseFeeChangeDenom(uint256 indexed baseFeeChangeDenom);
     event NewValidatorWhitelist(address indexed validator);
+    event CommitNewValidator(address indexed validator);
 
     /**
      * @notice initializer for NetworkParams, sets the initial set of values for the network
@@ -256,5 +257,16 @@ contract NetworkParams is Ownable2Step, Initializable {
         require(validator != address(0));
 
         emit NewValidatorWhitelist(validator);
+    }
+
+    /**
+     * @notice function to emit an event that allows commiting new validator set
+     * @dev disallows setting of a zer
+     * @param validator address of new validator
+     */
+    function commitNewValidator(address validator) external onlyOwner {
+        require(validator != address(0));
+
+        emit CommitNewValidator(validator);
     }
 }
