@@ -89,22 +89,6 @@ function checkpointBlockInterval() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### commitNewValidator
-
-```solidity
-function commitNewValidator(address validator) external nonpayable
-```
-
-function to emit an event that allows commiting new validator set
-
-*disallows emit of a zero*
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| validator | address | address of new validator |
-
 ### epochReward
 
 ```solidity
@@ -188,6 +172,22 @@ function minValidatorSetSize() external view returns (uint256)
 | Name | Type | Description |
 |---|---|---|
 | _0 | uint256 | undefined |
+
+### newValidatorSetCommit
+
+```solidity
+function newValidatorSetCommit(address validator) external nonpayable
+```
+
+function to emit an event that allows commiting new validator set
+
+*disallows emit of a zero*
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validator | address | address of new validator |
 
 ### owner
 
@@ -526,10 +526,10 @@ function votingPeriod() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
-### whiteListNewValidator
+### whitelistNewValidator
 
 ```solidity
-function whiteListNewValidator(address validator) external nonpayable
+function whitelistNewValidator(address validator) external nonpayable
 ```
 
 function to emit an event that allows whitelist
@@ -562,22 +562,6 @@ function withdrawalWaitPeriod() external view returns (uint256)
 
 
 ## Events
-
-### CommitNewValidator
-
-```solidity
-event CommitNewValidator(address indexed validator)
-```
-
-
-
-
-
-#### Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| validator `indexed` | address | undefined |
 
 ### Initialized
 
@@ -754,6 +738,22 @@ event NewSprintSize(uint256 indexed size)
 | Name | Type | Description |
 |---|---|---|
 | size `indexed` | uint256 | undefined |
+
+### NewValidatorSetCommit
+
+```solidity
+event NewValidatorSetCommit(address indexed validator)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validator `indexed` | address | undefined |
 
 ### NewValidatorWhitelist
 
