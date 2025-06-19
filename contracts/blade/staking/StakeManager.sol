@@ -14,8 +14,7 @@ import "../../lib/WithdrawalQueue.sol";
 import "../../blade/NetworkParams.sol";
 
 contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
-    uint256 private constant defaultStakeAmount = 1;
-    uint256 private constant defaultMintAmount = 10;
+    uint256 private constant defaultAmount = 1;
 
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
@@ -65,7 +64,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         for (uint i = 0; i < genesisValidators.length; i++) {
             GenesisValidator memory validator = genesisValidators[i];
             validators[validator.addr] = Validator(validator.addr, validator.blsKey, true, true);
-            _stake(validator.addr, defaultStakeAmount); // validator stake must be set to default amount
+            _stake(validator.addr, defaultAmount); // validator stake must be set to default amount
         }
         _transferOwnership(owner);
     }
@@ -82,7 +81,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
      * @inheritdoc IStakeManager
      */
     function unstake(uint256 amount) external onlyValidator(msg.sender) {
-        _unstake(msg.sender, defaultStakeAmount);
+        _unstake(msg.sender, defaultAmount);
     }
 
     /**
@@ -120,8 +119,8 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         validator.blsKey = pubkey;
         validator.addr = msg.sender;
         _removeFromWhitelist(msg.sender);
-        _stake(msg.sender, defaultStakeAmount);
-        emit ValidatorRegistered(msg.sender, pubkey, defaultStakeAmount);
+        _stake(msg.sender, defaultAmount);
+        emit ValidatorRegistered(msg.sender, pubkey, defaultAmount);
     }
 
     /**
@@ -169,7 +168,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
     function _addToWhitelist(address validator) internal {
         validators[validator].isWhitelisted = true;
-        _mint(validator, defaultMintAmount);
+        _mint(validator, defaultAmount);
         emit AddedToWhitelist(validator);
     }
 
