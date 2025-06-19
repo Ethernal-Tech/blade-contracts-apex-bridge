@@ -176,7 +176,7 @@ function minValidatorSetSize() external view returns (uint256)
 ### newValidatorSetCommit
 
 ```solidity
-function newValidatorSetCommit(address validator) external nonpayable
+function newValidatorSetCommit(address validator, bool isRegister) external nonpayable
 ```
 
 function to emit an event that allows commiting new validator set
@@ -188,6 +188,7 @@ function to emit an event that allows commiting new validator set
 | Name | Type | Description |
 |---|---|---|
 | validator | address | address of new validator |
+| isRegister | bool | undefined |
 
 ### owner
 
@@ -742,7 +743,7 @@ event NewSprintSize(uint256 indexed size)
 ### NewValidatorSetCommit
 
 ```solidity
-event NewValidatorSetCommit(address indexed validator)
+event NewValidatorSetCommit(address indexed validator, bool isRegister)
 ```
 
 
@@ -754,6 +755,7 @@ event NewValidatorSetCommit(address indexed validator)
 | Name | Type | Description |
 |---|---|---|
 | validator `indexed` | address | undefined |
+| isRegister  | bool | undefined |
 
 ### NewValidatorWhitelist
 
