@@ -120,7 +120,6 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         validator.blsKey = pubkey;
         validator.addr = msg.sender;
         _removeFromWhitelist(msg.sender);
-        _stakingToken.approve(msg.sender, defaultAmount);
         _stake(msg.sender, defaultAmount);
         emit ValidatorRegistered(msg.sender, pubkey, defaultAmount);
     }
