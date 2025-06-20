@@ -12,8 +12,9 @@ import "../../interfaces/common/IBLS.sol";
 import "../../interfaces/blade/validator/IEpochManager.sol";
 import "../../lib/WithdrawalQueue.sol";
 import "../../blade/NetworkParams.sol";
+import "../System.sol";
 
-contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
+contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable, System {
     uint256 private constant defaultAmount = 1;
 
     using SafeERC20 for IERC20;
@@ -101,7 +102,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
-    function whitelistValidators(address[] calldata validators_) external onlyValidator(msg.sender) {
+    function whitelistValidators(address[] calldata validators_) external onlySystemCall {
         uint256 length = validators_.length;
         for (uint256 i = 0; i < length; i++) {
             _addToWhitelist(validators_[i]);
