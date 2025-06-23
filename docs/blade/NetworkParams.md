@@ -173,6 +173,22 @@ function minValidatorSetSize() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### newValidatorSet
+
+```solidity
+function newValidatorSet(ValidatorSet[] validatorSet) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validatorSet | ValidatorSet[] | undefined |
+
 ### owner
 
 ```solidity
@@ -706,6 +722,22 @@ event NewSprintSize(uint256 indexed size)
 | Name | Type | Description |
 |---|---|---|
 | size `indexed` | uint256 | undefined |
+
+### NewValidatorSet
+
+```solidity
+event NewValidatorSet(ValidatorSet[] validatorSet)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validatorSet  | ValidatorSet[] | undefined |
 
 ### NewVotingDelay
 

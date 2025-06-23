@@ -13,6 +13,19 @@ struct GenesisValidator {
     uint256[4] blsKey;
 }
 
+struct ValidatorSet {
+    address addr;
+    ValidatorData[] validatorData;
+    address[] removedValidators;
+}
+
+struct ValidatorData {
+    uint8 chainID;
+    uint256[4] blsKey;
+    bytes signature;
+    bytes feeSignature;
+}
+
 /**
     @title IStakeManager
     @author Polygon Technology (@gretzke)
