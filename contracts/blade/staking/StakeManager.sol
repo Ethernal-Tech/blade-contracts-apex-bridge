@@ -84,7 +84,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     function unstake(uint256 amount) external onlyValidator(msg.sender) {
         // do not allow additional unstaking!_unstake(msg.sender, amount);
 
-        _unstake(msg.sender, defaultAm);
+        _unstake(msg.sender, defaultStakeAmount);
     }
 
     /**

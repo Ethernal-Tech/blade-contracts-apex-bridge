@@ -15,7 +15,7 @@ struct GenesisValidator {
 
 struct ValidatorSet {
     uint8 chainID;
-    ValidatorData[] validatorData;
+    ValidatorAddressChainData[] validatorData;
 }
 
 struct ValidatorAddressChainData {
