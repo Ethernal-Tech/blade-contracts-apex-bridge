@@ -15,12 +15,12 @@ struct GenesisValidator {
 
 struct ValidatorSet {
     address addr;
+    uint8 id;
     ValidatorData[] validatorData;
-    address[] removedValidators;
 }
 
 struct ValidatorData {
-    uint8 chainID;
+    address addr;
     uint256[4] blsKey;
     bytes signature;
     bytes feeSignature;

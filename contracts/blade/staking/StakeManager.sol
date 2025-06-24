@@ -74,6 +74,8 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
      */
     function stake(uint256 amount) external onlyValidator(msg.sender) {
         // do not allow additional staking! _stake(msg.sender, amount);
+
+        revert("STAKING_IS_NOT_POSSIBLE");
     }
 
     /**
@@ -102,10 +104,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
      * @inheritdoc IStakeManager
      */
     function whitelistValidators(address[] calldata validators_) external onlyOwner {
-        uint256 length = validators_.length;
-        for (uint256 i = 0; i < length; i++) {
-            _addToWhitelist(validators_[i]);
-        }
+        revert("WHITELIST_IS_NOT_POSSIBLE");
     }
 
     /**
@@ -114,7 +113,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     function register(uint256[2] calldata signature, uint256[4] calldata pubkey) external pure {
         signature;
         pubkey; // Explicitly reference to suppress warnings
-        // validator set changing is not supported currently!
+        //validator set changing is not supported currently!
         // Validator storage validator = validators[msg.sender];
         // if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
         // _verifyValidatorRegistration(msg.sender, signature, pubkey);
