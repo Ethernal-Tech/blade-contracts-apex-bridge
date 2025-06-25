@@ -13,12 +13,12 @@ struct GenesisValidator {
     uint256[4] blsKey;
 }
 
-struct ValidatorSet {
+struct ValidatorSetApex {
     uint8 chainID;
-    ValidatorAddressChainData[] validatorData;
+    ValidatorAddressChainDataApex[] validatorData;
 }
 
-struct ValidatorAddressChainData {
+struct ValidatorAddressChainDataApex {
     address addr;
     uint256[4] key;
     bytes signature;

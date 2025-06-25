@@ -819,7 +819,7 @@ called by a validator to unstake
 ### updateValidatorSet
 
 ```solidity
-function updateValidatorSet(ValidatorSet[] validatorSets, address[] removedValidators) external nonpayable
+function updateValidatorSet(ValidatorSetApex[] validatorSets, address[] removedValidators) external nonpayable
 ```
 
 
@@ -830,7 +830,7 @@ function updateValidatorSet(ValidatorSet[] validatorSets, address[] removedValid
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSets | ValidatorSet[] | undefined |
+| validatorSets | ValidatorSetApex[] | undefined |
 | removedValidators | address[] | undefined |
 
 ### validators

@@ -176,7 +176,7 @@ function minValidatorSetSize() external view returns (uint256)
 ### newValidatorSet
 
 ```solidity
-function newValidatorSet(ValidatorSet[] validatorSet, address[] removedValidators) external nonpayable
+function newValidatorSet(ValidatorSetApex[] validatorSet, address[] removedValidators) external nonpayable
 ```
 
 
@@ -187,7 +187,7 @@ function newValidatorSet(ValidatorSet[] validatorSet, address[] removedValidator
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSet | ValidatorSet[] | undefined |
+| validatorSet | ValidatorSetApex[] | undefined |
 | removedValidators | address[] | undefined |
 
 ### owner
@@ -727,7 +727,7 @@ event NewSprintSize(uint256 indexed size)
 ### NewValidatorSet
 
 ```solidity
-event NewValidatorSet(ValidatorSet[] validatorSet, address[] removedValidators)
+event NewValidatorSet(ValidatorSetApex[] validatorSet, address[] removedValidators)
 ```
 
 
@@ -738,7 +738,7 @@ event NewValidatorSet(ValidatorSet[] validatorSet, address[] removedValidators)
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSet  | ValidatorSet[] | undefined |
+| validatorSet  | ValidatorSetApex[] | undefined |
 | removedValidators  | address[] | undefined |
 
 ### NewVotingDelay

@@ -56,7 +56,7 @@ contract NetworkParams is Ownable2Step, Initializable {
     event NewVotingPeriod(uint256 indexed votingPeriod);
     event NewProposalThreshold(uint256 indexed proposalThreshold);
     event NewBaseFeeChangeDenom(uint256 indexed baseFeeChangeDenom);
-    event NewValidatorSet(ValidatorSet[] validatorSet, address[] removedValidators);
+    event NewValidatorSet(ValidatorSetApex[] validatorSet, address[] removedValidators);
 
     /**
      * @notice initializer for NetworkParams, sets the initial set of values for the network
@@ -249,7 +249,7 @@ contract NetworkParams is Ownable2Step, Initializable {
     }
 
     function newValidatorSet(
-        ValidatorSet[] calldata validatorSet,
+        ValidatorSetApex[] calldata validatorSet,
         address[] calldata removedValidators
     ) external onlyOwner {
         for (uint256 i = 0; i < validatorSet.length; i++) {
