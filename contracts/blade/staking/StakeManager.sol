@@ -84,7 +84,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     function unstake(uint256 amount) external onlyValidator(msg.sender) {
         // do not allow additional unstaking!_unstake(msg.sender, amount);
 
-        _unstake(msg.sender, defaultStakeAmount);
+        revert("UNSTAKING_IS_NOT_POSSIBLE");
     }
 
     /**
@@ -202,10 +202,10 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     }
 
     function _unstake(address validator, uint256 amount) internal {
-        _burn(msg.sender, amount);
+        _burn(validator, amount);
         emit StakeRemoved(validator, amount);
 
-        _registerWithdrawal(msg.sender, amount);
+        _registerWithdrawal(validator, amount);
         _removeIfValidatorUnstaked(validator);
     }
 
@@ -242,25 +242,29 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     }
 
     function updateValidatorSet(
-        ValidatorSetApex[] calldata validatorSets,
+        ValidatorSetApex[] calldata addedValidators,
         address[] calldata removedValidators
     ) external {
-        for (uint256 i = 0; i < validatorSets.length; i++) {
-            for (uint256 j = 0; j < validatorSets[i].validatorData.length; j++) {
-                ValidatorAddressChainDataApex memory validatorData = validatorSets[i].validatorData[j];
+        for (uint256 i = 0; i < addedValidators.length; i++) {
+            ValidatorSetApex memory tempValidator = addedValidators[i];
+
+            for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
+                ValidatorAddressChainDataApex memory validatorData = tempValidator.validatorData[j];
+
                 Validator storage validator = validators[validatorData.addr];
                 if (!validator.isActive) {
                     _mint(validatorData.addr, defaultStakeAmount);
                     validator.isActive = true;
                     validator.blsKey = validatorData.key;
                     validator.addr = validatorData.addr;
+
                     _stake(validator.addr, defaultStakeAmount);
                     emit ValidatorRegistered(validatorData.addr, validatorData.key, defaultStakeAmount);
                 }
             }
         }
 
-        for (uint256 i = 0; i < validatorSets.length; i++) {
+        for (uint256 i = 0; i < addedValidators.length; i++) {
             _unstake(removedValidators[i], defaultStakeAmount);
         }
     }
