@@ -241,6 +241,27 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         super._delegate(delegator, delegatee);
     }
 
+    function updateValidatorSet(ValidatorSet[] calldata validatorSets, address[] calldata removedValidators) external {
+        for (uint256 i = 0; i < validatorSets.length; i++) {
+            for (uint256 j = 0; j < validatorSets[i].validatorData.length; j++) {
+                ValidatorAddressChainData memory validatorData = validatorSets[i].validatorData[j];
+                Validator storage validator = validators[validatorData.addr];
+                if (!validator.isActive) {
+                    _mint(validatorData.addr, defaultStakeAmount);
+                    validator.isActive = true;
+                    validator.blsKey = validatorData.key;
+                    validator.addr = validatorData.addr;
+                    _stake(validator.addr, defaultStakeAmount);
+                    emit ValidatorRegistered(validatorData.addr, validatorData.key, defaultStakeAmount);
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < validatorSets.length; i++) {
+            _unstake(removedValidators[i], defaultStakeAmount);
+        }
+    }
+
     // slither-disable-next-line unused-state,naming-convention
     uint256[48] private __gap;
 }

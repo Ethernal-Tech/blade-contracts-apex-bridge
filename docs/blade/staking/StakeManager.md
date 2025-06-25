@@ -816,6 +816,23 @@ called by a validator to unstake
 |---|---|---|
 | amount | uint256 | undefined |
 
+### updateValidatorSet
+
+```solidity
+function updateValidatorSet(ValidatorSet[] validatorSets, address[] removedValidators) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validatorSets | ValidatorSet[] | undefined |
+| removedValidators | address[] | undefined |
+
 ### validators
 
 ```solidity
