@@ -10,6 +10,23 @@
 
 ## Methods
 
+### BRIDGE_CONTRACT
+
+```solidity
+function BRIDGE_CONTRACT() external view returns (address)
+```
+
+
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### CLOCK_MODE
 
 ```solidity
@@ -819,7 +836,7 @@ called by a validator to unstake
 ### updateValidatorSet
 
 ```solidity
-function updateValidatorSet(ValidatorSetApex[] validatorSets, address[] removedValidators) external nonpayable
+function updateValidatorSet(ValidatorSetApex[] validatorSet, address[] removedValidators) external nonpayable
 ```
 
 
@@ -830,7 +847,7 @@ function updateValidatorSet(ValidatorSetApex[] validatorSets, address[] removedV
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSets | ValidatorSetApex[] | undefined |
+| validatorSet | ValidatorSetApex[] | undefined |
 | removedValidators | address[] | undefined |
 
 ### validators

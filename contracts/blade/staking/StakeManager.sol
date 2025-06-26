@@ -19,6 +19,8 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
 
+    address public constant BRIDGE_CONTRACT = 0xaBef000000000000000000000000000000000000;
+
     IBLS private _bls;
     IERC20 private _stakingToken;
     IEpochManager private _epochManager;
@@ -33,6 +35,11 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
     modifier onlyValidator(address validator) {
         if (!validators[validator].isActive) revert Unauthorized("VALIDATOR");
+        _;
+    }
+
+    modifier onlyBridgeCall() {
+        if (msg.sender != BRIDGE_CONTRACT) revert Unauthorized("BRIDGE_CONTRACT");
         _;
     }
 
@@ -244,7 +251,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     function updateValidatorSet(
         ValidatorSetApex[] calldata validatorSet,
         address[] calldata removedValidators
-    ) external {
+    ) external onlyBridgeCall {
         for (uint256 i = 0; i < validatorSet.length; i++) {
             ValidatorSetApex memory tempValidator = validatorSet[i];
 
