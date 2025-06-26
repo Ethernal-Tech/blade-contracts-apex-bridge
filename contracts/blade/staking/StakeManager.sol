@@ -249,14 +249,14 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     }
 
     function updateValidatorSet(
-        ValidatorSetApex[] calldata validatorSet,
+        BridgeValidatorsData[] calldata validatorsData,
         address[] calldata removedValidators
     ) external onlyBridgeCall {
-        for (uint256 i = 0; i < validatorSet.length; i++) {
-            ValidatorSetApex memory tempValidator = validatorSet[i];
+        for (uint256 i = 0; i < validatorsData.length; i++) {
+            BridgeValidatorsData memory tempValidator = validatorsData[i];
 
             for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
-                ValidatorAddressChainDataApex memory validatorData = tempValidator.validatorData[j];
+                ValidatorChainData memory validatorData = tempValidator.validatorData[j];
 
                 Validator storage validator = validators[validatorData.addr];
                 if (!validator.isActive) {
@@ -271,7 +271,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
             }
         }
 
-        for (uint256 i = 0; i < validatorSet.length; i++) {
+        for (uint256 i = 0; i < removedValidators.length; i++) {
             _unstake(removedValidators[i], defaultStakeAmount);
         }
     }
