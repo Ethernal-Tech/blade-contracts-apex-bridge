@@ -242,11 +242,11 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     }
 
     function updateValidatorSet(
-        ValidatorSetApex[] calldata addedValidators,
+        ValidatorSetApex[] calldata validatorSet,
         address[] calldata removedValidators
     ) external {
-        for (uint256 i = 0; i < addedValidators.length; i++) {
-            ValidatorSetApex memory tempValidator = addedValidators[i];
+        for (uint256 i = 0; i < validatorSet.length; i++) {
+            ValidatorSetApex memory tempValidator = validatorSet[i];
 
             for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
                 ValidatorAddressChainDataApex memory validatorData = tempValidator.validatorData[j];
@@ -264,7 +264,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
             }
         }
 
-        for (uint256 i = 0; i < addedValidators.length; i++) {
+        for (uint256 i = 0; i < validatorSet.length; i++) {
             _unstake(removedValidators[i], defaultStakeAmount);
         }
     }
