@@ -15,10 +15,10 @@ struct GenesisValidator {
 
 struct BridgeValidatorsData {
     uint8 chainID;
-    ValidatorChainData[] validatorData;
+    ValidatorData[] validatorData;
 }
 
-struct ValidatorChainData {
+struct ValidatorData {
     address addr;
     uint256[4] key;
     bytes signature;

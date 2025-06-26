@@ -256,7 +256,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
             BridgeValidatorsData memory tempValidator = validatorsData[i];
 
             for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
-                ValidatorChainData memory validatorData = tempValidator.validatorData[j];
+                ValidatorData memory validatorData = tempValidator.validatorData[j];
 
                 Validator storage validator = validators[validatorData.addr];
                 if (!validator.isActive) {
