@@ -176,7 +176,7 @@ function minValidatorSetSize() external view returns (uint256)
 ### newValidatorSet
 
 ```solidity
-function newValidatorSet(BridgeValidatorsData[] validatorsData, address[] removedValidators) external nonpayable
+function newValidatorSet(ValidatorSetDelta validatorSetDelta) external nonpayable
 ```
 
 
@@ -187,8 +187,7 @@ function newValidatorSet(BridgeValidatorsData[] validatorsData, address[] remove
 
 | Name | Type | Description |
 |---|---|---|
-| validatorsData | BridgeValidatorsData[] | undefined |
-| removedValidators | address[] | undefined |
+| validatorSetDelta | ValidatorSetDelta | undefined |
 
 ### owner
 
@@ -727,7 +726,7 @@ event NewSprintSize(uint256 indexed size)
 ### NewValidatorSet
 
 ```solidity
-event NewValidatorSet(BridgeValidatorsData[] validatorSet, address[] removedValidators)
+event NewValidatorSet(ValidatorSetDelta indexed validatorSetDelta)
 ```
 
 
@@ -738,8 +737,7 @@ event NewValidatorSet(BridgeValidatorsData[] validatorSet, address[] removedVali
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSet  | BridgeValidatorsData[] | undefined |
-| removedValidators  | address[] | undefined |
+| validatorSetDelta `indexed` | ValidatorSetDelta | undefined |
 
 ### NewVotingDelay
 

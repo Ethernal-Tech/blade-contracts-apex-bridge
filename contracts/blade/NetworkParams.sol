@@ -56,7 +56,7 @@ contract NetworkParams is Ownable2Step, Initializable {
     event NewVotingPeriod(uint256 indexed votingPeriod);
     event NewProposalThreshold(uint256 indexed proposalThreshold);
     event NewBaseFeeChangeDenom(uint256 indexed baseFeeChangeDenom);
-    event NewValidatorSet(BridgeValidatorsData[] validatorSet, address[] removedValidators);
+    event NewValidatorSet(ValidatorSetDelta indexed validatorSetDelta);
 
     /**
      * @notice initializer for NetworkParams, sets the initial set of values for the network
@@ -248,13 +248,7 @@ contract NetworkParams is Ownable2Step, Initializable {
         emit NewBaseFeeChangeDenom(newBaseFeeChangeDenom);
     }
 
-    function newValidatorSet(
-        BridgeValidatorsData[] calldata validatorsData,
-        address[] calldata removedValidators
-    ) external onlyOwner {
-        for (uint256 i = 0; i < validatorsData.length; i++) {
-            require(validatorsData[i].validatorData.length != 0, "VALIDATOR_SET_MUST_CONTAIN_VALIDATOR_DATA");
-        }
-        emit NewValidatorSet(validatorsData, removedValidators);
+    function newValidatorSet(ValidatorSetDelta calldata validatorSetDelta) external onlyOwner {
+        emit NewValidatorSet(validatorSetDelta);
     }
 }

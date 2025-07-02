@@ -248,30 +248,29 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         super._delegate(delegator, delegatee);
     }
 
-    function updateValidatorSet(
-        BridgeValidatorsData[] calldata validatorsData,
-        address[] calldata removedValidators
-    ) external onlyBridgeCall {
-        for (uint256 i = 0; i < validatorsData.length; i++) {
-            BridgeValidatorsData memory tempValidator = validatorsData[i];
+    function updateValidatorSet(ValidatorSetDelta calldata validatorSetDelta) external onlyBridgeCall {
+        for (uint256 i = 0; i < validatorSetDelta.addedValidators.length; i++) {
+            if (validatorSetDelta.addedValidators[i].chainID == 0xFF) {
+                BridgeValidatorsData memory tempValidator = validatorSetDelta.addedValidators[i];
 
-            for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
-                ValidatorData memory validatorData = tempValidator.validatorData[j];
+                for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
+                    ValidatorData memory validatorData = tempValidator.validatorData[j];
 
-                Validator storage validator = validators[validatorData.addr];
-                if (!validator.isActive) {
-                    validator.isActive = true;
-                    validator.blsKey = validatorData.key;
-                    validator.addr = validatorData.addr;
+                    Validator storage validator = validators[validatorData.addr];
+                    if (!validator.isActive) {
+                        validator.isActive = true;
+                        validator.blsKey = validatorData.key;
+                        validator.addr = validatorData.addr;
 
-                    _stake(validator.addr, defaultStakeAmount);
-                    emit ValidatorRegistered(validatorData.addr, validatorData.key, defaultStakeAmount);
+                        _stake(validator.addr, defaultStakeAmount);
+                        emit ValidatorRegistered(validatorData.addr, validatorData.key, defaultStakeAmount);
+                    }
                 }
             }
         }
 
-        for (uint256 i = 0; i < removedValidators.length; i++) {
-            _unstake(removedValidators[i], defaultStakeAmount);
+        for (uint256 i = 0; i < validatorSetDelta.removedValidators.length; i++) {
+            _unstake(validatorSetDelta.removedValidators[i], defaultStakeAmount);
         }
     }
 

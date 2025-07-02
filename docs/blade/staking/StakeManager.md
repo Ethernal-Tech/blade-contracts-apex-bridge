@@ -836,7 +836,7 @@ called by a validator to unstake
 ### updateValidatorSet
 
 ```solidity
-function updateValidatorSet(BridgeValidatorsData[] validatorsData, address[] removedValidators) external nonpayable
+function updateValidatorSet(ValidatorSetDelta validatorSetDelta) external nonpayable
 ```
 
 
@@ -847,8 +847,7 @@ function updateValidatorSet(BridgeValidatorsData[] validatorsData, address[] rem
 
 | Name | Type | Description |
 |---|---|---|
-| validatorsData | BridgeValidatorsData[] | undefined |
-| removedValidators | address[] | undefined |
+| validatorSetDelta | ValidatorSetDelta | undefined |
 
 ### validators
 
