@@ -131,7 +131,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         // _removeFromWhitelist(msg.sender);
         // _stake(msg.sender, defaultStakeAmount);
         // emit ValidatorRegistered(msg.sender, pubkey, defaultStakeAmount);
-        revert("CURRENTLY NOT AVAILABLE");
+        revert("REGISTER_CURRENTLY_NOT_AVAILABLE");
     }
 
     /**
@@ -260,7 +260,6 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
                 Validator storage validator = validators[validatorData.addr];
                 if (!validator.isActive) {
-                    _mint(validatorData.addr, defaultStakeAmount);
                     validator.isActive = true;
                     validator.blsKey = validatorData.key;
                     validator.addr = validatorData.addr;
