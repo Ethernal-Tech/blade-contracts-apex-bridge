@@ -7,6 +7,7 @@ import {EpochManager} from "contracts/blade/validator/EpochManager.sol";
 import {GenesisValidator} from "contracts/interfaces/blade/staking/IStakeManager.sol";
 import {BridgeValidatorsData} from "contracts/interfaces/blade/staking/IStakeManager.sol";
 import {ValidatorData} from "contracts/interfaces/blade/staking/IStakeManager.sol";
+import {ValidatorSetDelta} from "contracts/interfaces/blade/staking/IStakeManager.sol";
 import {Epoch} from "contracts/interfaces/blade/validator/IEpochManager.sol";
 import {MockERC20} from "contracts/mocks/MockERC20.sol";
 import {NetworkParams} from "contracts/blade/NetworkParams.sol";
@@ -169,11 +170,12 @@ contract StakeManager_UpdateValidatorSet is Initialized {
     
 
     function test_RevertUnathorized() public {
-        BridgeValidatorsData[] memory validatorsData = new BridgeValidatorsData[](1);
-        address[] memory removedValidators = new address[](1);
+        BridgeValidatorsData[] memory validatorsData = new BridgeValidatorsData[](0);
+        address[] memory removedValidators = new address[](0);
+        ValidatorSetDelta memory validatorSetDelta = ValidatorSetDelta(validatorsData, removedValidators);
         vm.expectRevert(abi.encodeWithSelector(Unauthorized.selector, "BRIDGE_CONTRACT"));
         vm.prank(mike);
-        stakeManager.updateValidatorSet(validatorsData, removedValidators);
+        stakeManager.updateValidatorSet(validatorSetDelta);
     }
 
     function test_SuccessfulRegistration() public {
@@ -186,9 +188,10 @@ contract StakeManager_UpdateValidatorSet is Initialized {
         ValidatorData[] memory validatorsData = new ValidatorData[](1);
         address[] memory removedValidators = new address[](0);
         validatorsData[0] = ValidatorData(mike, pubKey, "", "");
-        bridgeValidatorsData[0] = BridgeValidatorsData(1, validatorsData);
+        bridgeValidatorsData[0] = BridgeValidatorsData(0xff, validatorsData);
+        ValidatorSetDelta memory validatorSetDelta = ValidatorSetDelta(bridgeValidatorsData, removedValidators);
         vm.startPrank(bridge);
-        stakeManager.updateValidatorSet(bridgeValidatorsData, removedValidators);
+        stakeManager.updateValidatorSet(validatorSetDelta);
         uint256 stake = stakeManager.stakeOf(mike);
         assertEq(stake, stakeAmount, "expected same stake");
     }
@@ -198,9 +201,10 @@ contract StakeManager_UpdateValidatorSet is Initialized {
 
         BridgeValidatorsData[] memory bridgeValidatorsData = new BridgeValidatorsData[](0);
         address[] memory removedValidators = new address[](1);
+        ValidatorSetDelta memory validatorSetDelta = ValidatorSetDelta(bridgeValidatorsData, removedValidators);
         removedValidators[0] = alice;
         vm.startPrank(bridge);
-        stakeManager.updateValidatorSet(bridgeValidatorsData, removedValidators);
+        stakeManager.updateValidatorSet(validatorSetDelta);
         uint256 stake = stakeManager.stakeOf(alice);
         assertEq(stake, 0, "expected same stake");
     }
