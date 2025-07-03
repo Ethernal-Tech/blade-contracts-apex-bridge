@@ -836,7 +836,7 @@ called by a validator to unstake
 ### updateValidatorSet
 
 ```solidity
-function updateValidatorSet(ValidatorDelta validatorSetDelta) external nonpayable
+function updateValidatorSet(ValidatorDelta validatorDelta) external nonpayable
 ```
 
 
@@ -847,7 +847,7 @@ function updateValidatorSet(ValidatorDelta validatorSetDelta) external nonpayabl
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSetDelta | ValidatorDelta | undefined |
+| validatorDelta | ValidatorDelta | undefined |
 
 ### validators
 

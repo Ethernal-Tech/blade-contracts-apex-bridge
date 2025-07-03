@@ -172,10 +172,10 @@ contract StakeManager_UpdateValidatorSet is Initialized {
     function test_RevertUnathorized() public {
         BridgeValidatorsData[] memory validatorsData = new BridgeValidatorsData[](0);
         address[] memory removedValidators = new address[](0);
-        ValidatorDelta memory validatorSetDelta = ValidatorDelta(validatorsData, removedValidators);
+        ValidatorDelta memory validatorDelta = ValidatorDelta(validatorsData, removedValidators);
         vm.expectRevert(abi.encodeWithSelector(Unauthorized.selector, "BRIDGE_CONTRACT"));
         vm.prank(mike);
-        stakeManager.updateValidatorSet(validatorSetDelta);
+        stakeManager.updateValidatorSet(validatorDelta);
     }
 
     function test_SuccessfulRegistration() public {
@@ -189,9 +189,9 @@ contract StakeManager_UpdateValidatorSet is Initialized {
         address[] memory removedValidators = new address[](0);
         validatorsData[0] = ValidatorData(mike, pubKey, "", "");
         bridgeValidatorsData[0] = BridgeValidatorsData(0xff, validatorsData);
-        ValidatorDelta memory validatorSetDelta = ValidatorDelta(bridgeValidatorsData, removedValidators);
+        ValidatorDelta memory validatorDelta = ValidatorDelta(bridgeValidatorsData, removedValidators);
         vm.startPrank(bridge);
-        stakeManager.updateValidatorSet(validatorSetDelta);
+        stakeManager.updateValidatorSet(validatorDelta);
         uint256 stake = stakeManager.stakeOf(mike);
         assertEq(stake, stakeAmount, "expected same stake");
     }
@@ -201,10 +201,10 @@ contract StakeManager_UpdateValidatorSet is Initialized {
 
         BridgeValidatorsData[] memory bridgeValidatorsData = new BridgeValidatorsData[](0);
         address[] memory removedValidators = new address[](1);
-        ValidatorDelta memory validatorSetDelta = ValidatorDelta(bridgeValidatorsData, removedValidators);
+        ValidatorDelta memory validatorDelta = ValidatorDelta(bridgeValidatorsData, removedValidators);
         removedValidators[0] = alice;
         vm.startPrank(bridge);
-        stakeManager.updateValidatorSet(validatorSetDelta);
+        stakeManager.updateValidatorSet(validatorDelta);
         uint256 stake = stakeManager.stakeOf(alice);
         assertEq(stake, 0, "expected same stake");
     }

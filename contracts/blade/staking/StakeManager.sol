@@ -208,10 +208,10 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         super._delegate(delegator, delegatee);
     }
 
-    function updateValidatorSet(ValidatorDelta calldata validatorSetDelta) external onlyBridgeCall {
-        for (uint256 i = 0; i < validatorSetDelta.addedValidators.length; i++) {
-            if (validatorSetDelta.addedValidators[i].chainID == 0xFF) {
-                BridgeValidatorsData memory tempValidator = validatorSetDelta.addedValidators[i];
+    function updateValidatorSet(ValidatorDelta calldata validatorDelta) external onlyBridgeCall {
+        for (uint256 i = 0; i < validatorDelta.addedValidators.length; i++) {
+            if (validatorDelta.addedValidators[i].chainID == 0xFF) {
+                BridgeValidatorsData memory tempValidator = validatorDelta.addedValidators[i];
 
                 for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
                     ValidatorData memory validatorData = tempValidator.validatorData[j];
@@ -229,8 +229,8 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
             }
         }
 
-        for (uint256 i = 0; i < validatorSetDelta.removedValidators.length; i++) {
-            _unstake(validatorSetDelta.removedValidators[i], DEFAULT_STAKE_AMOUNT);
+        for (uint256 i = 0; i < validatorDelta.removedValidators.length; i++) {
+            _unstake(validatorDelta.removedValidators[i], DEFAULT_STAKE_AMOUNT);
         }
     }
 
