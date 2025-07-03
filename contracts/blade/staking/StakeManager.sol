@@ -166,7 +166,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
     function _stake(address validator, uint256 amount) internal {
         _mint(validator, amount);
-        // slither-disable-next-line reentrancy-benign,reentrancy-events
+        // slither-disable-next-line reentrancy-benign,reentrancy-events, arbitrary-send-erc20
         _stakingToken.safeTransferFrom(validator, address(this), amount);
         _delegate(validator, validator);
         // slither-disable-next-line reentrancy-events
@@ -182,6 +182,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     }
 
     function _registerWithdrawal(address account, uint256 amount) internal {
+        // slither-disable-next-line calls-loop
         _withdrawals[account].append(amount, _epochManager.currentEpochId() + _networkParams.withdrawalWaitPeriod());
     }
 

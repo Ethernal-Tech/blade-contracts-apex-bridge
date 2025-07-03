@@ -60,6 +60,7 @@ abstract contract AAStakeManager is IAAStakeManager {
     function addStake(uint32 unstakeDelaySec) public payable {
         DepositInfo storage info = deposits[msg.sender];
         require(unstakeDelaySec > 0, "must specify unstake delay");
+        //slither-disable-next-line timestamp
         require(unstakeDelaySec >= info.unstakeDelaySec, "cannot decrease unstake time");
         uint256 stake = info.stake + msg.value;
         require(stake > 0, "no stake specified");
@@ -113,6 +114,7 @@ abstract contract AAStakeManager is IAAStakeManager {
      */
     function withdrawTo(address payable withdrawAddress, uint256 withdrawAmount) external {
         DepositInfo storage info = deposits[msg.sender];
+        //slither-disable-next-line timestamp
         require(withdrawAmount <= info.deposit, "Withdraw amount too large");
         info.deposit = uint112(info.deposit - withdrawAmount);
         emit Withdrawn(msg.sender, withdrawAddress, withdrawAmount);

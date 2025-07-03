@@ -145,6 +145,7 @@ contract RootERC1155Predicate is Initializable, ERC1155Holder, IRootERC1155Predi
         address childToken = _getChildToken(rootToken);
 
         for (uint256 i = 0; i < tokenIds.length; ) {
+            // slither-disable-next-line calls-loop
             rootToken.safeTransferFrom(msg.sender, address(this), tokenIds[i], amounts[i], "");
             unchecked {
                 ++i;
@@ -184,6 +185,7 @@ contract RootERC1155Predicate is Initializable, ERC1155Holder, IRootERC1155Predi
         address childToken = rootTokenToChildToken[rootToken];
         assert(childToken != address(0)); // invariant because child predicate should have already mapped tokens
         for (uint256 i = 0; i < tokenIds.length; ) {
+            // slither-disable-next-line calls-loop
             IERC1155MetadataURI(rootToken).safeTransferFrom(address(this), receivers[i], tokenIds[i], amounts[i], "");
             unchecked {
                 ++i;
