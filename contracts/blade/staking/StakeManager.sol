@@ -166,7 +166,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
     function _stake(address validator, uint256 amount) internal {
         _mint(validator, amount);
-        // slither-disable-next-line reentrancy-benign,reentrancy-events, arbitrary-send-erc20
+        // slither-disable-next-line reentrancy-benign,reentrancy-events, arbitrary-from-in-transferfrom
         _stakingToken.safeTransferFrom(validator, address(this), amount);
         _delegate(validator, validator);
         // slither-disable-next-line reentrancy-events
