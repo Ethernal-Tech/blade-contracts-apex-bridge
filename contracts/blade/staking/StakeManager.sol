@@ -208,7 +208,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         super._delegate(delegator, delegatee);
     }
 
-    function updateValidatorSet(ValidatorSetDelta calldata validatorSetDelta) external onlyBridgeCall {
+    function updateValidatorSet(ValidatorDelta calldata validatorSetDelta) external onlyBridgeCall {
         for (uint256 i = 0; i < validatorSetDelta.addedValidators.length; i++) {
             if (validatorSetDelta.addedValidators[i].chainID == 0xFF) {
                 BridgeValidatorsData memory tempValidator = validatorSetDelta.addedValidators[i];

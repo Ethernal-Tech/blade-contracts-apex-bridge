@@ -176,7 +176,7 @@ function minValidatorSetSize() external view returns (uint256)
 ### newValidatorSet
 
 ```solidity
-function newValidatorSet(ValidatorSetDelta validatorSetDelta) external nonpayable
+function newValidatorSet(ValidatorDelta validatorSetDelta) external nonpayable
 ```
 
 
@@ -187,7 +187,7 @@ function newValidatorSet(ValidatorSetDelta validatorSetDelta) external nonpayabl
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSetDelta | ValidatorSetDelta | undefined |
+| validatorSetDelta | ValidatorDelta | undefined |
 
 ### owner
 
@@ -726,7 +726,7 @@ event NewSprintSize(uint256 indexed size)
 ### NewValidatorSet
 
 ```solidity
-event NewValidatorSet(ValidatorSetDelta indexed validatorSetDelta)
+event NewValidatorSet(ValidatorDelta indexed validatorSetDelta)
 ```
 
 
@@ -737,7 +737,7 @@ event NewValidatorSet(ValidatorSetDelta indexed validatorSetDelta)
 
 | Name | Type | Description |
 |---|---|---|
-| validatorSetDelta `indexed` | ValidatorSetDelta | undefined |
+| validatorSetDelta `indexed` | ValidatorDelta | undefined |
 
 ### NewVotingDelay
 

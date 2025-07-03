@@ -13,7 +13,7 @@ struct GenesisValidator {
     uint256[4] blsKey;
 }
 
-struct ValidatorSetDelta {
+struct ValidatorDelta {
     BridgeValidatorsData[] addedValidators;
     address[] removedValidators;
 }
