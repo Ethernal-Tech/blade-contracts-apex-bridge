@@ -14,11 +14,10 @@ import "../../lib/WithdrawalQueue.sol";
 import "../../blade/NetworkParams.sol";
 
 contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
-    uint256 private constant defaultStakeAmount = 1;
-
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
 
+    uint256 private constant DEFAULT_STAKE_AMOUNT = 1;
     address public constant BRIDGE_CONTRACT = 0xaBef000000000000000000000000000000000000;
 
     IBLS private _bls;
@@ -71,7 +70,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         for (uint i = 0; i < genesisValidators.length; i++) {
             GenesisValidator memory validator = genesisValidators[i];
             validators[validator.addr] = Validator(validator.addr, validator.blsKey, true, true);
-            _stake(validator.addr, defaultStakeAmount); // validator stake must be set to default amount
+            _stake(validator.addr, DEFAULT_STAKE_AMOUNT); // validator stake must be set to default amount
         }
         _transferOwnership(owner);
     }
@@ -119,18 +118,6 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
      * @inheritdoc IStakeManager
      */
     function register(uint256[2] calldata signature, uint256[4] calldata pubkey) external pure {
-        signature;
-        pubkey; // Explicitly reference to suppress warnings
-        //validator set changing is not supported currently!
-        // Validator storage validator = validators[msg.sender];
-        // if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
-        // _verifyValidatorRegistration(msg.sender, signature, pubkey);
-        // validator.isActive = true;
-        // validator.blsKey = pubkey;
-        // validator.addr = msg.sender;
-        // _removeFromWhitelist(msg.sender);
-        // _stake(msg.sender, defaultStakeAmount);
-        // emit ValidatorRegistered(msg.sender, pubkey, defaultStakeAmount);
         revert("REGISTER_CURRENTLY_NOT_AVAILABLE");
     }
 
@@ -177,28 +164,6 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         return super.getPastVotes(account, _epochManager.epochEndingBlocks(epochNumber));
     }
 
-    function _addToWhitelist(address validator) internal {
-        validators[validator].isWhitelisted = true;
-        emit AddedToWhitelist(validator);
-    }
-
-    function _removeFromWhitelist(address validator) internal {
-        validators[validator].isWhitelisted = false;
-        emit RemovedFromWhitelist(validator);
-    }
-
-    function _verifyValidatorRegistration(
-        address signer,
-        uint256[2] calldata signature,
-        uint256[4] calldata pubkey
-    ) internal view {
-        /// @dev signature verification succeeds if signature and pubkey are empty
-        if (signature[0] == 0 && signature[1] == 0) revert InvalidSignature(signer);
-        // slither-disable-next-line calls-loop
-        (bool result, bool callSuccess) = _bls.verifySingle(signature, pubkey, _message(signer));
-        if (!callSuccess || !result) revert InvalidSignature(signer);
-    }
-
     function _stake(address validator, uint256 amount) internal {
         _mint(validator, amount);
         // slither-disable-next-line reentrancy-benign,reentrancy-events
@@ -218,13 +183,6 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
     function _registerWithdrawal(address account, uint256 amount) internal {
         _withdrawals[account].append(amount, _epochManager.currentEpochId() + _networkParams.withdrawalWaitPeriod());
-    }
-
-    /// @notice Message to sign for registration
-    function _message(address signer) internal view returns (uint256[2] memory) {
-        bytes memory hash = abi.encodePacked(signer, address(this), block.chainid);
-        // slither-disable-next-line calls-loop
-        return _bls.hashToPoint(domain, hash);
     }
 
     function _removeIfValidatorUnstaked(address validator) internal {
@@ -262,15 +220,15 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
                         validator.blsKey = validatorData.key;
                         validator.addr = validatorData.addr;
 
-                        _stake(validator.addr, defaultStakeAmount);
-                        emit ValidatorRegistered(validatorData.addr, validatorData.key, defaultStakeAmount);
+                        _stake(validator.addr, DEFAULT_STAKE_AMOUNT);
+                        emit ValidatorRegistered(validatorData.addr, validatorData.key, DEFAULT_STAKE_AMOUNT);
                     }
                 }
             }
         }
 
         for (uint256 i = 0; i < validatorSetDelta.removedValidators.length; i++) {
-            _unstake(validatorSetDelta.removedValidators[i], defaultStakeAmount);
+            _unstake(validatorSetDelta.removedValidators[i], DEFAULT_STAKE_AMOUNT);
         }
     }
 
