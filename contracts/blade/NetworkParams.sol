@@ -248,6 +248,11 @@ contract NetworkParams is Ownable2Step, Initializable {
         emit NewBaseFeeChangeDenom(newBaseFeeChangeDenom);
     }
 
+    /**
+     * @notice function to emit new validators delta
+     * @dev only emits event with validator delta
+     * @param validatorDelta added and deleted validators
+     */
     function newValidatorSet(ValidatorDelta calldata validatorDelta) external onlyOwner {
         emit NewValidatorSet(validatorDelta);
     }
