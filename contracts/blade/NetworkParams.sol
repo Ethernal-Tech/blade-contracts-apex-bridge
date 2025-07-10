@@ -56,7 +56,7 @@ contract NetworkParams is Ownable2Step, Initializable {
     event NewVotingPeriod(uint256 indexed votingPeriod);
     event NewProposalThreshold(uint256 indexed proposalThreshold);
     event NewBaseFeeChangeDenom(uint256 indexed baseFeeChangeDenom);
-    event NewValidatorSet(ValidatorDelta indexed validatorDelta);
+    event NewValidatorSet(ValidatorDelta validatorDelta);
 
     /**
      * @notice initializer for NetworkParams, sets the initial set of values for the network

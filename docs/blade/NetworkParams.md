@@ -726,7 +726,7 @@ event NewSprintSize(uint256 indexed size)
 ### NewValidatorSet
 
 ```solidity
-event NewValidatorSet(ValidatorDelta indexed validatorDelta)
+event NewValidatorSet(ValidatorDelta validatorDelta)
 ```
 
 
@@ -737,7 +737,7 @@ event NewValidatorSet(ValidatorDelta indexed validatorDelta)
 
 | Name | Type | Description |
 |---|---|---|
-| validatorDelta `indexed` | ValidatorDelta | undefined |
+| validatorDelta  | ValidatorDelta | undefined |
 
 ### NewVotingDelay
 
