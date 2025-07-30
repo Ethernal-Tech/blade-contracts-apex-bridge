@@ -230,17 +230,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         _burn(validator, amount);
         emit StakeRemoved(validator, amount);
 
-        _registerWithdrawal(validator, amount);
         _removeIfValidatorUnstaked(validator);
-    }
-
-    /// @dev Registers a withdrawal request for the given account.
-    /// The withdrawal becomes available after the configured withdrawal wait period (in epochs).
-    /// @param account The address of the account initiating the withdrawal.
-    /// @param amount The amount of tokens to be withdrawn after the wait period.
-    function _registerWithdrawal(address account, uint256 amount) internal {
-        // slither-disable-next-line calls-loop
-        _withdrawals[account].append(amount, _epochManager.currentEpochId() + _networkParams.withdrawalWaitPeriod());
     }
 
     /// @dev Deactivates the validator if their stake has dropped to zero.

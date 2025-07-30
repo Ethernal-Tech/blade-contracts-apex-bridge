@@ -88,4 +88,7 @@ interface IStakeManager {
 
     /// @notice returns a validator balance for a given epoch
     function balanceOfAt(address account, uint256 epochNumber) external view returns (uint256);
+
+    /// @notice register new validators and unstake the deleted ones.
+    function updateValidatorSet(ValidatorDelta calldata validatorDelta) external;
 }
