@@ -18,7 +18,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     using WithdrawalQueueLib for WithdrawalQueue;
 
     /// @notice Every validator has same stake, so stake amount only can be 1.
-    uint256 private constant DEFAULT_STAKE_AMOUNT = 1;
+    uint256 private constant DEFAULT_STAKE_AMOUNT = 1 ether;
     /// @notice Bridge contract address is predefined, so it is always the same.
     address public constant BRIDGE_CONTRACT = 0xaBef000000000000000000000000000000000000;
 
