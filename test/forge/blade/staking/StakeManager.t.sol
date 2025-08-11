@@ -32,7 +32,7 @@ abstract contract Uninitialized is Test {
     address rewardWallet = makeAddr("rewardWallet");
     address bridge = 0xaBef000000000000000000000000000000000000;
 
-    uint256 stakeAmount = 1;
+    uint256 stakeAmount = 1 ether;
     uint256[2][] public aggMessagePoints;
 
     function setUp() public virtual {
