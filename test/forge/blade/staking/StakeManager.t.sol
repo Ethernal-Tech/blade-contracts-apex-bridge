@@ -32,7 +32,7 @@ abstract contract Uninitialized is Test {
     address rewardWallet = makeAddr("rewardWallet");
     address bridge = 0xaBef000000000000000000000000000000000000;
 
-    uint256 stakeAmount = 1 ether;
+    uint256 stakeAmount = 1;
     uint256[2][] public aggMessagePoints;
 
     function setUp() public virtual {
@@ -181,9 +181,6 @@ contract StakeManager_UpdateValidatorSet is Initialized {
     function test_SuccessfulRegistration() public {
         (uint256[2] memory signature, uint256[4] memory pubKey) = getSignatureAndPubKey(mike);
         
-        vm.prank(mike);
-        token.approve(address(stakeManager), type(uint256).max);
-
         BridgeValidatorsData[] memory bridgeValidatorsData = new BridgeValidatorsData[](1);
         ValidatorData[] memory validatorsData = new ValidatorData[](1);
         address[] memory removedValidators = new address[](0);
