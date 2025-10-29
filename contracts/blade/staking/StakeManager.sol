@@ -48,6 +48,12 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         _;
     }
 
+    /// @notice Returns the current version of the contract
+    /// @return A semantic version string
+    function version() public pure returns (string memory) {
+        return "1.0.0";
+    }
+
     /// @notice Initializes the StakeManager contract.
     /// @param newStakingToken Address of Staking token contract, must be compatible with IERC20 interface.
     /// @param newBls Address of Bls contract.

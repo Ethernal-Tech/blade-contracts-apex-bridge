@@ -873,6 +873,23 @@ Mapping of all validators.
 | isWhitelisted | bool | undefined |
 | isActive | bool | undefined |
 
+### version
+
+```solidity
+function version() external pure returns (string)
+```
+
+Returns the current version of the contract
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | A semantic version string |
+
 ### whitelistValidators
 
 ```solidity
