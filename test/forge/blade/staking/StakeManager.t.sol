@@ -12,6 +12,7 @@ import {Epoch} from "contracts/interfaces/blade/validator/IEpochManager.sol";
 import {MockERC20} from "contracts/mocks/MockERC20.sol";
 import {NetworkParams} from "contracts/blade/NetworkParams.sol";
 import {BLS} from "contracts/common/BLS.sol";
+import {Constants} from "contracts/blade/Constants.sol";
 import "contracts/interfaces/Errors.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
@@ -32,7 +33,6 @@ abstract contract Uninitialized is Test {
     address rewardWallet = makeAddr("rewardWallet");
     address bridge = 0xaBef000000000000000000000000000000000000;
 
-    uint256 stakeAmount = 1 ether;
     uint256[2][] public aggMessagePoints;
 
     function setUp() public virtual {
@@ -181,9 +181,6 @@ contract StakeManager_UpdateValidatorSet is Initialized {
     function test_SuccessfulRegistration() public {
         (uint256[2] memory signature, uint256[4] memory pubKey) = getSignatureAndPubKey(mike);
         
-        vm.prank(mike);
-        token.approve(address(stakeManager), type(uint256).max);
-
         BridgeValidatorsData[] memory bridgeValidatorsData = new BridgeValidatorsData[](1);
         ValidatorData[] memory validatorsData = new ValidatorData[](1);
         address[] memory removedValidators = new address[](0);
@@ -193,7 +190,7 @@ contract StakeManager_UpdateValidatorSet is Initialized {
         vm.startPrank(bridge);
         stakeManager.updateValidatorSet(validatorDelta);
         uint256 stake = stakeManager.stakeOf(mike);
-        assertEq(stake, stakeAmount, "expected same stake");
+        assertEq(stake, Constants.DEFAULT_STAKE, "expected same stake");
     }
 
     function test_RemoveValidator() public {
