@@ -12,13 +12,11 @@ import "../../interfaces/common/IBLS.sol";
 import "../../interfaces/blade/validator/IEpochManager.sol";
 import "../../lib/WithdrawalQueue.sol";
 import "../../blade/NetworkParams.sol";
+import {Constants} from "../Constants.sol";
 
 contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
-
-    /// @notice Every validator has same stake, so stake amount only can be 1.
-    uint256 private constant DEFAULT_STAKE_AMOUNT = 1 ether;
     /// @notice Bridge contract address is predefined, so it is always the same.
     address public constant BRIDGE_CONTRACT = 0xaBef000000000000000000000000000000000000;
 
@@ -90,7 +88,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         for (uint i = 0; i < genesisValidators.length; i++) {
             GenesisValidator memory validator = genesisValidators[i];
             validators[validator.addr] = Validator(validator.addr, validator.blsKey, true, true);
-            _stake(validator.addr, DEFAULT_STAKE_AMOUNT); // validator stake must be set to default amount
+            _stake(validator.addr, Constants.DEFAULT_STAKE); // validator stake must be set to default amount
         }
         _transferOwnership(owner);
     }
@@ -274,7 +272,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /// @notice Updates the validator set by adding and removing validators based on the provided delta.
     /// @dev Only callable via the bridge using the `onlyBridgeCall` modifier.
     /// Adds new validators if their `chainID` equals 0xFF and activates them if not already active.
-    /// Automatically stakes `DEFAULT_STAKE_AMOUNT` for new validators and emits a {ValidatorRegistered} event.
+    /// Automatically stakes `DEFAULT_STAKE` for new validators and emits a {ValidatorRegistered} event.
     /// Removes validators listed in `removedValidators` by calling `_unstake`.
     /// @param validatorDelta The struct containing lists of added and removed validators.
     function updateValidatorSet(ValidatorDelta calldata validatorDelta) external onlyBridgeCall {
@@ -291,15 +289,15 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
                         validator.blsKey = validatorData.key;
                         validator.addr = validatorData.addr;
 
-                        _stake(validator.addr, DEFAULT_STAKE_AMOUNT);
-                        emit ValidatorRegistered(validatorData.addr, validatorData.key, DEFAULT_STAKE_AMOUNT);
+                        _stake(validator.addr, Constants.DEFAULT_STAKE);
+                        emit ValidatorRegistered(validatorData.addr, validatorData.key, Constants.DEFAULT_STAKE);
                     }
                 }
             }
         }
 
         for (uint256 i = 0; i < validatorDelta.removedValidators.length; i++) {
-            _unstake(validatorDelta.removedValidators[i], DEFAULT_STAKE_AMOUNT);
+            _unstake(validatorDelta.removedValidators[i], Constants.DEFAULT_STAKE);
         }
     }
 

@@ -8,6 +8,7 @@ import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesQ
 import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
 
 import {NetworkParams} from "contracts/blade/NetworkParams.sol";
+import {Constants} from "../Constants.sol";
 
 contract ChildGovernor is
     GovernorUpgradeable,
@@ -40,8 +41,10 @@ contract ChildGovernor is
         return _networkParams.votingPeriod();
     }
 
+    // @notice The minimum number of votes an account must have to create a proposal.
+    // @return The required voting power to submit a proposal.
     function proposalThreshold() public view override returns (uint256) {
-        return _networkParams.proposalThreshold();
+        return Constants.DEFAULT_STAKE;
     }
 
     // The functions below are overrides required by Solidity.
