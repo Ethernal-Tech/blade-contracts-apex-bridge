@@ -16,7 +16,7 @@
 function DEFAULT_STAKE() external view returns (uint256)
 ```
 
-Default stake for validators and for governance proposals
+Default stake for validators
 
 
 
