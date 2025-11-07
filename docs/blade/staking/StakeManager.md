@@ -681,6 +681,22 @@ function symbol() external view returns (string)
 |---|---|---|
 | _0 | string | undefined |
 
+### sync
+
+```solidity
+function sync(address[] accounts) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| accounts | address[] | undefined |
+
 ### totalStake
 
 ```solidity

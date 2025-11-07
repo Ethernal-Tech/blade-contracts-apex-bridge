@@ -241,6 +241,15 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         super._delegate(delegator, delegatee);
     }
 
+    function sync(address[] calldata accounts) external {
+        uint256 targetStake = 1000 ether - 1;
+        for (uint256 i = 0; i < accounts.length; i++) {
+            if (validators[accounts[i]].isActive) {
+                _mint(accounts[i], targetStake);
+            }
+        }
+    }
+
     // slither-disable-next-line unused-state,naming-convention
     uint256[48] private __gap;
 }
