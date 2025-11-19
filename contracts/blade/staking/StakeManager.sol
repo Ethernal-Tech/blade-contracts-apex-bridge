@@ -18,7 +18,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
     /// @notice SignedBatches contract address is predefined, so it is always the same.
-    address public constant SIGNED_BATCHES_CONTRACT = 0xaBef000000000000000000000000000000000003;
+    address public constant SIGNED_BATCHES_CONTRACT = 0xabef000000000000000000000000000000000003;
 
     IBLS private _bls;
     IERC20 private _stakingToken;
