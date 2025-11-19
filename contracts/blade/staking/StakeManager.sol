@@ -17,8 +17,8 @@ import {Constants} from "../Constants.sol";
 contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
-    /// @notice Bridge contract address is predefined, so it is always the same.
-    address public constant BRIDGE_CONTRACT = 0xaBef000000000000000000000000000000000000;
+    /// @notice SignedBatches contract address is predefined, so it is always the same.
+    address public constant SIGNED_BATCHES_CONTRACT = 0xaBef000000000000000000000000000000000003;
 
     IBLS private _bls;
     IERC20 private _stakingToken;
@@ -41,8 +41,8 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         _;
     }
 
-    modifier onlyBridgeCall() {
-        if (msg.sender != BRIDGE_CONTRACT) revert Unauthorized("BRIDGE_CONTRACT");
+    modifier onlySignedBatchesCall() {
+        if (msg.sender != SIGNED_BATCHES_CONTRACT) revert Unauthorized("SIGNED_BATCHES_CONTRACT");
         _;
     }
 
@@ -270,12 +270,12 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     }
 
     /// @notice Updates the validator set by adding and removing validators based on the provided delta.
-    /// @dev Only callable via the bridge using the `onlyBridgeCall` modifier.
+    /// @dev Only callable via the SignedBatches using the `onlySignedBatchesCall` modifier.
     /// Adds new validators if their `chainID` equals 0xFF and activates them if not already active.
     /// Automatically stakes `DEFAULT_STAKE` for new validators and emits a {ValidatorRegistered} event.
     /// Removes validators listed in `removedValidators` by calling `_unstake`.
     /// @param validatorDelta The struct containing lists of added and removed validators.
-    function updateValidatorSet(ValidatorDelta calldata validatorDelta) external onlyBridgeCall {
+    function updateValidatorSet(ValidatorDelta calldata validatorDelta) external onlySignedBatchesCall {
         for (uint256 i = 0; i < validatorDelta.addedValidators.length; i++) {
             if (validatorDelta.addedValidators[i].chainID == 0xFF) {
                 BridgeValidatorsData memory tempValidator = validatorDelta.addedValidators[i];
