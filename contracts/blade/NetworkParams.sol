@@ -256,4 +256,10 @@ contract NetworkParams is Ownable2Step, Initializable {
     function newValidatorSet(ValidatorDelta calldata validatorDelta) external onlyOwner {
         emit NewValidatorSet(validatorDelta);
     }
+
+    /// @notice Returns the current version of the contract
+    /// @return A semantic version string
+    function version() public pure returns (string memory) {
+        return "1.0.1";
+    }
 }
