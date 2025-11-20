@@ -492,6 +492,23 @@ function transferOwnership(address newOwner) external nonpayable
 |---|---|---|
 | newOwner | address | undefined |
 
+### version
+
+```solidity
+function version() external pure returns (string)
+```
+
+Returns the current version of the contract
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | A semantic version string |
+
 ### votingDelay
 
 ```solidity
