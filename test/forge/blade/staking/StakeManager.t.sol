@@ -31,7 +31,7 @@ abstract contract Uninitialized is Test {
     address alice = makeAddr("alice");
     address jim = makeAddr("jim");
     address rewardWallet = makeAddr("rewardWallet");
-    address bridge = 0xaBef000000000000000000000000000000000000;
+    address signedBatchesSC = 0xabef000000000000000000000000000000000003;
 
     uint256[2][] public aggMessagePoints;
 
@@ -40,7 +40,7 @@ abstract contract Uninitialized is Test {
         token.mint(alice, 1000 ether);
         token.mint(bob, 1000 ether);
         token.mint(jim, 1000 ether);
-        token.mint(bridge, 1000 ether);
+        token.mint(signedBatchesSC, 1000 ether);
 
         bls = new BLS();
         stakeManager = new StakeManager();
@@ -53,7 +53,7 @@ abstract contract Uninitialized is Test {
         token.approve(address(stakeManager), type(uint256).max);
         vm.prank(jim);
         token.approve(address(stakeManager), type(uint256).max);
-        vm.prank(bridge);
+        vm.prank(signedBatchesSC);
         token.approve(address(stakeManager), type(uint256).max);
 
         epochManager.initialize(address(stakeManager), address(token), rewardWallet, address(networkParams));
@@ -173,7 +173,7 @@ contract StakeManager_UpdateValidatorSet is Initialized {
         BridgeValidatorsData[] memory validatorsData = new BridgeValidatorsData[](0);
         address[] memory removedValidators = new address[](0);
         ValidatorDelta memory validatorDelta = ValidatorDelta(validatorsData, removedValidators);
-        vm.expectRevert(abi.encodeWithSelector(Unauthorized.selector, "BRIDGE_CONTRACT"));
+        vm.expectRevert(abi.encodeWithSelector(Unauthorized.selector, "SIGNED_BATCHES_CONTRACT"));
         vm.prank(mike);
         stakeManager.updateValidatorSet(validatorDelta);
     }
@@ -187,7 +187,7 @@ contract StakeManager_UpdateValidatorSet is Initialized {
         validatorsData[0] = ValidatorData(mike, pubKey, "", "");
         bridgeValidatorsData[0] = BridgeValidatorsData(0xff, validatorsData);
         ValidatorDelta memory validatorDelta = ValidatorDelta(bridgeValidatorsData, removedValidators);
-        vm.startPrank(bridge);
+        vm.startPrank(signedBatchesSC);
         stakeManager.updateValidatorSet(validatorDelta);
         uint256 stake = stakeManager.stakeOf(mike);
         assertEq(stake, Constants.DEFAULT_STAKE, "expected same stake");
@@ -200,7 +200,7 @@ contract StakeManager_UpdateValidatorSet is Initialized {
         address[] memory removedValidators = new address[](1);
         ValidatorDelta memory validatorDelta = ValidatorDelta(bridgeValidatorsData, removedValidators);
         removedValidators[0] = alice;
-        vm.startPrank(bridge);
+        vm.startPrank(signedBatchesSC);
         stakeManager.updateValidatorSet(validatorDelta);
         uint256 stake = stakeManager.stakeOf(alice);
         assertEq(stake, 0, "expected same stake");
