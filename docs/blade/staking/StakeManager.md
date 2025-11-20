@@ -10,23 +10,6 @@
 
 ## Methods
 
-### BRIDGE_CONTRACT
-
-```solidity
-function BRIDGE_CONTRACT() external view returns (address)
-```
-
-Bridge contract address is predefined, so it is always the same.
-
-
-
-
-#### Returns
-
-| Name | Type | Description |
-|---|---|---|
-| _0 | address | undefined |
-
 ### CLOCK_MODE
 
 ```solidity
@@ -60,6 +43,23 @@ function DOMAIN_SEPARATOR() external view returns (bytes32)
 | Name | Type | Description |
 |---|---|---|
 | _0 | bytes32 | undefined |
+
+### SIGNED_BATCHES_CONTRACT
+
+```solidity
+function SIGNED_BATCHES_CONTRACT() external view returns (address)
+```
+
+SignedBatches contract address is predefined, so it is always the same.
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
 
 ### acceptOwnership
 
