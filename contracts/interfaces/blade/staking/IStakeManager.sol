@@ -13,6 +13,23 @@ struct GenesisValidator {
     uint256[4] blsKey;
 }
 
+struct ValidatorDelta {
+    BridgeValidatorsData[] addedValidators;
+    address[] removedValidators;
+}
+
+struct BridgeValidatorsData {
+    uint8 chainID;
+    ValidatorData[] validatorData;
+}
+
+struct ValidatorData {
+    address addr;
+    uint256[4] key;
+    bytes signature;
+    bytes feeSignature;
+}
+
 /**
     @title IStakeManager
     @author Polygon Technology (@gretzke)
@@ -71,4 +88,7 @@ interface IStakeManager {
 
     /// @notice returns a validator balance for a given epoch
     function balanceOfAt(address account, uint256 epochNumber) external view returns (uint256);
+
+    /// @notice register new validators and unstake the deleted ones.
+    function updateValidatorSet(ValidatorDelta calldata validatorDelta) external;
 }

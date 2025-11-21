@@ -3,6 +3,7 @@ pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "../interfaces/blade/staking/IStakeManager.sol";
 
 struct InitParams {
     address newOwner;
@@ -55,6 +56,7 @@ contract NetworkParams is Ownable2Step, Initializable {
     event NewVotingPeriod(uint256 indexed votingPeriod);
     event NewProposalThreshold(uint256 indexed proposalThreshold);
     event NewBaseFeeChangeDenom(uint256 indexed baseFeeChangeDenom);
+    event NewValidatorSet(ValidatorDelta validatorDelta);
 
     /**
      * @notice initializer for NetworkParams, sets the initial set of values for the network
@@ -244,5 +246,20 @@ contract NetworkParams is Ownable2Step, Initializable {
         baseFeeChangeDenom = newBaseFeeChangeDenom;
 
         emit NewBaseFeeChangeDenom(newBaseFeeChangeDenom);
+    }
+
+    /**
+     * @notice function to emit new validators delta
+     * @dev only emits event with validator delta
+     * @param validatorDelta added and deleted validators
+     */
+    function newValidatorSet(ValidatorDelta calldata validatorDelta) external onlyOwner {
+        emit NewValidatorSet(validatorDelta);
+    }
+
+    /// @notice Returns the current version of the contract
+    /// @return A semantic version string
+    function version() public pure returns (string memory) {
+        return "1.0.1";
     }
 }

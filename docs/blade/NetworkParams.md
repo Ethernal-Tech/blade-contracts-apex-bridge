@@ -173,6 +173,22 @@ function minValidatorSetSize() external view returns (uint256)
 |---|---|---|
 | _0 | uint256 | undefined |
 
+### newValidatorSet
+
+```solidity
+function newValidatorSet(ValidatorDelta validatorDelta) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validatorDelta | ValidatorDelta | undefined |
+
 ### owner
 
 ```solidity
@@ -476,6 +492,23 @@ function transferOwnership(address newOwner) external nonpayable
 |---|---|---|
 | newOwner | address | undefined |
 
+### version
+
+```solidity
+function version() external pure returns (string)
+```
+
+Returns the current version of the contract
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | A semantic version string |
+
 ### votingDelay
 
 ```solidity
@@ -706,6 +739,22 @@ event NewSprintSize(uint256 indexed size)
 | Name | Type | Description |
 |---|---|---|
 | size `indexed` | uint256 | undefined |
+
+### NewValidatorSet
+
+```solidity
+event NewValidatorSet(ValidatorDelta validatorDelta)
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validatorDelta  | ValidatorDelta | undefined |
 
 ### NewVotingDelay
 

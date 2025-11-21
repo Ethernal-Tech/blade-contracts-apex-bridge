@@ -187,6 +187,22 @@ called by a validator to unstake
 |---|---|---|
 | amount | uint256 | undefined |
 
+### updateValidatorSet
+
+```solidity
+function updateValidatorSet(ValidatorDelta validatorDelta) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validatorDelta | ValidatorDelta | undefined |
+
 ### whitelistValidators
 
 ```solidity

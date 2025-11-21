@@ -44,6 +44,23 @@ function DOMAIN_SEPARATOR() external view returns (bytes32)
 |---|---|---|
 | _0 | bytes32 | undefined |
 
+### SIGNED_BATCHES_CONTRACT
+
+```solidity
+function SIGNED_BATCHES_CONTRACT() external view returns (address)
+```
+
+SignedBatches contract address is predefined, so it is always the same.
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | address | undefined |
+
 ### acceptOwnership
 
 ```solidity
@@ -129,7 +146,7 @@ function balanceOf(address account) external view returns (uint256)
 function balanceOfAt(address account, uint256 epochNumber) external view returns (uint256)
 ```
 
-returns a validator balance for a given epoch
+Returns the staked balance of an account at the end of a given epoch.
 
 
 
@@ -137,14 +154,14 @@ returns a validator balance for a given epoch
 
 | Name | Type | Description |
 |---|---|---|
-| account | address | undefined |
-| epochNumber | uint256 | undefined |
+| account | address | The address of the account to query. |
+| epochNumber | uint256 | The epoch number to query. |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | The staked balance of the account at the end of the specified epoch. |
 
 ### checkpoints
 
@@ -376,7 +393,7 @@ function getPastVotes(address account, uint256 timepoint) external view returns 
 function getValidator(address validator_) external view returns (struct Validator)
 ```
 
-
+Returns the validator details for a given address.
 
 
 
@@ -384,13 +401,13 @@ function getValidator(address validator_) external view returns (struct Validato
 
 | Name | Type | Description |
 |---|---|---|
-| validator_ | address | undefined |
+| validator_ | address | The address of the validator to query. |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | Validator | undefined |
+| _0 | Validator | The Validator struct associated with the given address. |
 
 ### getVotes
 
@@ -560,7 +577,7 @@ function pendingOwner() external view returns (address)
 function pendingWithdrawals(address account) external view returns (uint256)
 ```
 
-Calculates how much is yet to become withdrawable for account.
+Returns the total amount of pending (not yet withdrawable) withdrawals for an account.
 
 
 
@@ -568,13 +585,13 @@ Calculates how much is yet to become withdrawable for account.
 
 | Name | Type | Description |
 |---|---|---|
-| account | address | The account to calculate amount for |
+| account | address | The address of the account to query. |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | Amount not yet withdrawable (in MATIC wei) |
+| _0 | uint256 | The total amount of pending withdrawals. |
 
 ### permit
 
@@ -604,9 +621,9 @@ function permit(address owner, address spender, uint256 value, uint256 deadline,
 function register(uint256[2] signature, uint256[4] pubkey) external pure
 ```
 
+Always reverts.
 
-
-
+*Register validator is no longer possible, this function remains only for backward compatibility.*
 
 #### Parameters
 
@@ -632,9 +649,9 @@ function renounceOwnership() external nonpayable
 function stake(uint256 amount) external nonpayable
 ```
 
-called by a validator to stake for a child chain
+Always reverts.
 
-
+*Cannot stake additional tokens, this function remains only for backward compatibility.*
 
 #### Parameters
 
@@ -648,7 +665,7 @@ called by a validator to stake for a child chain
 function stakeOf(address validator) external view returns (uint256 amount)
 ```
 
-returns the amount staked by a validator for a child chain
+Returns the stake amount of a specific validator.
 
 
 
@@ -656,13 +673,13 @@ returns the amount staked by a validator for a child chain
 
 | Name | Type | Description |
 |---|---|---|
-| validator | address | undefined |
+| validator | address | The address of the validator. |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| amount | uint256 | undefined |
+| amount | uint256 | The amount of tokens staked by the validator(the amount is always 1). |
 
 ### symbol
 
@@ -687,7 +704,7 @@ function symbol() external view returns (string)
 function totalStake() external view returns (uint256 amount)
 ```
 
-returns the total amount staked for all child chains
+Returns the total amount of stake in the contract.
 
 
 
@@ -696,7 +713,7 @@ returns the total amount staked for all child chains
 
 | Name | Type | Description |
 |---|---|---|
-| amount | uint256 | undefined |
+| amount | uint256 | The total staked amount (equivalent to total token supply, which is equal the number of active validators). |
 
 ### totalSupply
 
@@ -721,7 +738,7 @@ function totalSupply() external view returns (uint256)
 function totalSupplyAt(uint256 epochNumber) external view returns (uint256)
 ```
 
-returns the total supply for a given epoch
+Returns the total token supply at the end of a given epoch.
 
 
 
@@ -729,13 +746,13 @@ returns the total supply for a given epoch
 
 | Name | Type | Description |
 |---|---|---|
-| epochNumber | uint256 | undefined |
+| epochNumber | uint256 | The epoch number to query. |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| _0 | uint256 | undefined |
+| _0 | uint256 | The total token supply at the end of the specified epoch. |
 
 ### transfer
 
@@ -806,9 +823,9 @@ function transferOwnership(address newOwner) external nonpayable
 function unstake(uint256 amount) external nonpayable
 ```
 
-called by a validator to unstake
+Always reverts.
 
-
+*Cannot unstake tokens directly, this function remains only for backward compatibility.*
 
 #### Parameters
 
@@ -816,15 +833,31 @@ called by a validator to unstake
 |---|---|---|
 | amount | uint256 | undefined |
 
+### updateValidatorSet
+
+```solidity
+function updateValidatorSet(ValidatorDelta validatorDelta) external nonpayable
+```
+
+
+
+
+
+#### Parameters
+
+| Name | Type | Description |
+|---|---|---|
+| validatorDelta | ValidatorDelta | undefined |
+
 ### validators
 
 ```solidity
 function validators(address) external view returns (address addr, bool isWhitelisted, bool isActive)
 ```
 
+Mapping of all validators.
 
-
-
+*Maps a validators address to its corresponding Validator struct.*
 
 #### Parameters
 
@@ -840,15 +873,32 @@ function validators(address) external view returns (address addr, bool isWhiteli
 | isWhitelisted | bool | undefined |
 | isActive | bool | undefined |
 
+### version
+
+```solidity
+function version() external pure returns (string)
+```
+
+Returns the current version of the contract
+
+
+
+
+#### Returns
+
+| Name | Type | Description |
+|---|---|---|
+| _0 | string | A semantic version string |
+
 ### whitelistValidators
 
 ```solidity
 function whitelistValidators(address[] validators_) external nonpayable
 ```
 
+Always reverts.
 
-
-
+*Whitelisting validators is no longer necessary, this function remains only for backward compatibility.*
 
 #### Parameters
 
@@ -862,9 +912,9 @@ function whitelistValidators(address[] validators_) external nonpayable
 function withdraw() external nonpayable
 ```
 
-allows a validator to complete a withdrawal
+Withdraws the caller&#39;s unlocked stake from the withdrawal queue.
 
-*calls the bridge to release the funds on root*
+*Updates the queue head after withdrawal and transfers the unlocked amount.*
 
 
 ### withdrawable
@@ -873,7 +923,7 @@ allows a validator to complete a withdrawal
 function withdrawable(address account) external view returns (uint256 amount)
 ```
 
-Calculates how much can be withdrawn for account in this epoch.
+Returns the total amount of stake currently withdrawable by the given account.
 
 
 
@@ -881,13 +931,13 @@ Calculates how much can be withdrawn for account in this epoch.
 
 | Name | Type | Description |
 |---|---|---|
-| account | address | The account to calculate amount for |
+| account | address | The address of the account to check. |
 
 #### Returns
 
 | Name | Type | Description |
 |---|---|---|
-| amount | uint256 | Amount withdrawable (in MATIC wei) |
+| amount | uint256 | The total withdrawable stake for the account at the current epoch. |
 
 
 

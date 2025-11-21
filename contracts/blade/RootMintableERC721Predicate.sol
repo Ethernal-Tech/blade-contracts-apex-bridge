@@ -167,6 +167,7 @@ contract RootMintableERC721Predicate is Initializable, ERC721Holder, System, IRo
         address childToken = _getChildToken(rootToken);
 
         for (uint256 i = 0; i < tokenIds.length; ) {
+            // slither-disable-next-line calls-loop
             rootToken.safeTransferFrom(msg.sender, address(this), tokenIds[i]);
             unchecked {
                 ++i;
@@ -203,6 +204,7 @@ contract RootMintableERC721Predicate is Initializable, ERC721Holder, System, IRo
         address childToken = rootTokenToChildToken[rootToken];
         assert(childToken != address(0)); // invariant because child predicate should have already mapped tokens
         for (uint256 i = 0; i < tokenIds.length; ) {
+            // slither-disable-next-line calls-loop
             IERC721Metadata(rootToken).safeTransferFrom(address(this), receivers[i], tokenIds[i]);
             unchecked {
                 ++i;

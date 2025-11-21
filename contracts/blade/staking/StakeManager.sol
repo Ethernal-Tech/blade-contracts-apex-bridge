@@ -12,12 +12,13 @@ import "../../interfaces/common/IBLS.sol";
 import "../../interfaces/blade/validator/IEpochManager.sol";
 import "../../lib/WithdrawalQueue.sol";
 import "../../blade/NetworkParams.sol";
+import {Constants} from "../Constants.sol";
 
 contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, ERC20VotesUpgradeable {
-    uint256 private constant defaultStakeAmount = 1;
-
     using SafeERC20 for IERC20;
     using WithdrawalQueueLib for WithdrawalQueue;
+    /// @notice SignedBatches contract address is predefined, so it is always the same.
+    address public constant SIGNED_BATCHES_CONTRACT = 0xabef000000000000000000000000000000000003;
 
     IBLS private _bls;
     IERC20 private _stakingToken;
@@ -26,9 +27,13 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
 
     bytes32 public domain;
 
+    /// @notice Mapping of all validators.
+    /// @dev Maps a validators address to its corresponding Validator struct.
     mapping(address => Validator) public validators;
 
     // TODO: Figure out the unstake and stake withdrawal workflow (unlock period etc.)
+    /// @notice Mapping of withdrawal for each validator.
+    /// @dev Tracks the withdrawal queue for each account.
     mapping(address => WithdrawalQueue) private _withdrawals;
 
     modifier onlyValidator(address validator) {
@@ -36,6 +41,19 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         _;
     }
 
+    modifier onlySignedBatchesCall() {
+        if (msg.sender != SIGNED_BATCHES_CONTRACT) revert Unauthorized("SIGNED_BATCHES_CONTRACT");
+        _;
+    }
+
+    /// @notice Initializes the StakeManager contract.
+    /// @param newStakingToken Address of Staking token contract, must be compatible with IERC20 interface.
+    /// @param newBls Address of Bls contract.
+    /// @param epochManager Address of EpochManager contract.
+    /// @param networkParams Address of networkParams contract.
+    /// @param owner Owner of the contract.
+    /// @param newDomain Domain
+    /// @param genesisValidators genesis validator set.
     function initialize(
         address newStakingToken,
         address newBls,
@@ -64,7 +82,7 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         for (uint i = 0; i < genesisValidators.length; i++) {
             GenesisValidator memory validator = genesisValidators[i];
             validators[validator.addr] = Validator(validator.addr, validator.blsKey, true, true);
-            _stake(validator.addr, defaultStakeAmount); // validator stake must be set to default amount
+            _stake(validator.addr, Constants.DEFAULT_STAKE); // validator stake must be set to default amount
         }
         _transferOwnership(owner);
     }
@@ -72,21 +90,26 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Always reverts.
+    /// @dev Cannot stake additional tokens, this function remains only for backward compatibility.
     function stake(uint256 amount) external onlyValidator(msg.sender) {
-        // do not allow additional staking! _stake(msg.sender, amount);
+        revert("STAKING_IS_NOT_POSSIBLE");
     }
 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Always reverts.
+    /// @dev Cannot unstake tokens directly, this function remains only for backward compatibility.
     function unstake(uint256 amount) external onlyValidator(msg.sender) {
-        // do not allow additional unstaking!_unstake(msg.sender, amount);
-        // validator can not unregister himself!
+        revert("UNSTAKING_IS_NOT_POSSIBLE");
     }
 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Returns the total amount of stake in the contract.
+    /// @return amount The total staked amount (equivalent to total token supply, which is equal the number of active validators).
     function totalStake() external view returns (uint256 amount) {
         amount = totalSupply();
     }
@@ -94,6 +117,9 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Returns the stake amount of a specific validator.
+    /// @param validator The address of the validator.
+    /// @return amount The amount of tokens staked by the validator(the amount is always 1).
     function stakeOf(address validator) external view returns (uint256 amount) {
         amount = _stakeOf(validator);
     }
@@ -101,35 +127,27 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Always reverts.
+    /// @dev Whitelisting validators is no longer necessary, this function remains only for backward compatibility.
     function whitelistValidators(address[] calldata validators_) external onlyOwner {
-        uint256 length = validators_.length;
-        for (uint256 i = 0; i < length; i++) {
-            _addToWhitelist(validators_[i]);
-        }
+        revert("WHITELIST_IS_NOT_POSSIBLE");
     }
 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Always reverts.
+    /// @dev Register validator is no longer possible, this function remains only for backward compatibility.
     function register(uint256[2] calldata signature, uint256[4] calldata pubkey) external pure {
-        signature;
-        pubkey; // Explicitly reference to suppress warnings
-        // validator set changing is not supported currently!
-        // Validator storage validator = validators[msg.sender];
-        // if (!validator.isWhitelisted) revert Unauthorized("WHITELIST");
-        // _verifyValidatorRegistration(msg.sender, signature, pubkey);
-        // validator.isActive = true;
-        // validator.blsKey = pubkey;
-        // validator.addr = msg.sender;
-        // _removeFromWhitelist(msg.sender);
-        // _stake(msg.sender, defaultStakeAmount);
-        // emit ValidatorRegistered(msg.sender, pubkey, defaultStakeAmount);
-        revert("CURRENTLY NOT AVAILABLE");
+        revert("REGISTER_CURRENTLY_NOT_AVAILABLE");
     }
 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Returns the validator details for a given address.
+    /// @param validator_ The address of the validator to query.
+    /// @return The Validator struct associated with the given address.
     function getValidator(address validator_) external view returns (Validator memory) {
         return validators[validator_];
     }
@@ -137,6 +155,8 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Withdraws the caller's unlocked stake from the withdrawal queue.
+    /// @dev Updates the queue head after withdrawal and transfers the unlocked amount.
     function withdraw() external {
         WithdrawalQueue storage queue = _withdrawals[msg.sender];
         (uint256 amount, uint256 newHead) = queue.withdrawable(_epochManager.currentEpochId());
@@ -149,6 +169,9 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Returns the total amount of stake currently withdrawable by the given account.
+    /// @param account The address of the account to check.
+    /// @return amount The total withdrawable stake for the account at the current epoch.
     // slither-disable-next-line unused-return
     function withdrawable(address account) external view returns (uint256 amount) {
         uint256 currentEpochId = _epochManager.currentEpochId();
@@ -158,68 +181,55 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
     /**
      * @inheritdoc IStakeManager
      */
+    /// @notice Returns the total amount of pending (not yet withdrawable) withdrawals for an account.
+    /// @param account The address of the account to query.
+    /// @return The total amount of pending withdrawals.
     function pendingWithdrawals(address account) external view returns (uint256) {
         return _withdrawals[account].pending(_epochManager.currentEpochId());
     }
 
+    /// @notice Returns the total token supply at the end of a given epoch.
+    /// @param epochNumber The epoch number to query.
+    /// @return The total token supply at the end of the specified epoch.
     function totalSupplyAt(uint256 epochNumber) external view returns (uint256) {
         return super.getPastTotalSupply(_epochManager.epochEndingBlocks(epochNumber));
     }
 
+    /// @notice Returns the staked balance of an account at the end of a given epoch.
+    /// @param account The address of the account to query.
+    /// @param epochNumber The epoch number to query.
+    /// @return The staked balance of the account at the end of the specified epoch.
     function balanceOfAt(address account, uint256 epochNumber) external view returns (uint256) {
         return super.getPastVotes(account, _epochManager.epochEndingBlocks(epochNumber));
     }
 
-    function _addToWhitelist(address validator) internal {
-        validators[validator].isWhitelisted = true;
-        emit AddedToWhitelist(validator);
-    }
-
-    function _removeFromWhitelist(address validator) internal {
-        validators[validator].isWhitelisted = false;
-        emit RemovedFromWhitelist(validator);
-    }
-
-    function _verifyValidatorRegistration(
-        address signer,
-        uint256[2] calldata signature,
-        uint256[4] calldata pubkey
-    ) internal view {
-        /// @dev signature verification succeeds if signature and pubkey are empty
-        if (signature[0] == 0 && signature[1] == 0) revert InvalidSignature(signer);
-        // slither-disable-next-line calls-loop
-        (bool result, bool callSuccess) = _bls.verifySingle(signature, pubkey, _message(signer));
-        if (!callSuccess || !result) revert InvalidSignature(signer);
-    }
-
+    /// @dev Stakes a fixed amount of tokens for the given validator.
+    /// Mints staking power, transfers tokens from the validator.
+    /// delegates the voting power, and emits a {StakeAdded} event.
+    /// Slither warnings are disabled due to controlled internal use.
+    /// @param validator The address of the validator to stake for.
+    /// @param amount The amount of tokens to stake.
     function _stake(address validator, uint256 amount) internal {
         _mint(validator, amount);
-        // slither-disable-next-line reentrancy-benign,reentrancy-events
-        _stakingToken.safeTransferFrom(validator, address(this), amount);
         _delegate(validator, validator);
         // slither-disable-next-line reentrancy-events
         emit StakeAdded(validator, amount);
     }
 
+    /// @dev Unstakes a specified amount of tokens from the given validator.
+    /// Burns staking power, emits a {StakeRemoved} event, registers the withdrawal request,
+    /// and removes the validator if their stake drops to zero.
+    /// @param validator The address of the validator to unstake from.
+    /// @param amount The amount of tokens to unstake.
     function _unstake(address validator, uint256 amount) internal {
-        _burn(msg.sender, amount);
+        _burn(validator, amount);
         emit StakeRemoved(validator, amount);
 
-        _registerWithdrawal(msg.sender, amount);
         _removeIfValidatorUnstaked(validator);
     }
 
-    function _registerWithdrawal(address account, uint256 amount) internal {
-        _withdrawals[account].append(amount, _epochManager.currentEpochId() + _networkParams.withdrawalWaitPeriod());
-    }
-
-    /// @notice Message to sign for registration
-    function _message(address signer) internal view returns (uint256[2] memory) {
-        bytes memory hash = abi.encodePacked(signer, address(this), block.chainid);
-        // slither-disable-next-line calls-loop
-        return _bls.hashToPoint(domain, hash);
-    }
-
+    /// @dev Deactivates the validator if their stake has dropped to zero.
+    /// @param validator The address of the validator to check and potentially deactivate.
     function _removeIfValidatorUnstaked(address validator) internal {
         if (_stakeOf(validator) == 0) {
             validators[validator].isActive = false;
@@ -227,18 +237,68 @@ contract StakeManager is IStakeManager, Initializable, Ownable2StepUpgradeable, 
         }
     }
 
+    /// @dev Returns the current stake amount of the specified validator(amount is always 1).
+    /// @param validator The address of the validator.
+    /// @return amount The amount of tokens staked by the validator.
     function _stakeOf(address validator) internal view returns (uint256 amount) {
         amount = balanceOf(validator);
     }
 
+    /// @dev Restricts token transfers to only minting or burning.
+    /// Reverts with "TRANSFER_FORBIDDEN" if tokens are transferred between non-zero addresses.
+    /// @param from The address tokens are transferred from.
+    /// @param to The address tokens are transferred to.
+    /// @param amount The amount of tokens being transferred.
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
         require(from == address(0) || to == address(0), "TRANSFER_FORBIDDEN");
         super._beforeTokenTransfer(from, to, amount);
     }
 
+    /// @dev Overrides delegation to forbid delegating to any address other than oneself.
+    /// Reverts with "DELEGATION_FORBIDDEN" if `delegator` and `delegatee` differ.
+    /// @param delegator The address delegating their stake.
+    /// @param delegatee The address receiving the delegation (must be the delegator).
     function _delegate(address delegator, address delegatee) internal override {
         if (delegator != delegatee) revert("DELEGATION_FORBIDDEN");
         super._delegate(delegator, delegatee);
+    }
+
+    /// @notice Updates the validator set by adding and removing validators based on the provided delta.
+    /// @dev Only callable via the SignedBatches using the `onlySignedBatchesCall` modifier.
+    /// Adds new validators if their `chainID` equals 0xFF and activates them if not already active.
+    /// Automatically stakes `DEFAULT_STAKE` for new validators and emits a {ValidatorRegistered} event.
+    /// Removes validators listed in `removedValidators` by calling `_unstake`.
+    /// @param validatorDelta The struct containing lists of added and removed validators.
+    function updateValidatorSet(ValidatorDelta calldata validatorDelta) external onlySignedBatchesCall {
+        for (uint256 i = 0; i < validatorDelta.addedValidators.length; i++) {
+            if (validatorDelta.addedValidators[i].chainID == 0xFF) {
+                BridgeValidatorsData memory tempValidator = validatorDelta.addedValidators[i];
+
+                for (uint256 j = 0; j < tempValidator.validatorData.length; j++) {
+                    ValidatorData memory validatorData = tempValidator.validatorData[j];
+
+                    Validator storage validator = validators[validatorData.addr];
+                    if (!validator.isActive) {
+                        validator.isActive = true;
+                        validator.blsKey = validatorData.key;
+                        validator.addr = validatorData.addr;
+
+                        _stake(validator.addr, Constants.DEFAULT_STAKE);
+                        emit ValidatorRegistered(validatorData.addr, validatorData.key, Constants.DEFAULT_STAKE);
+                    }
+                }
+            }
+        }
+
+        for (uint256 i = 0; i < validatorDelta.removedValidators.length; i++) {
+            _unstake(validatorDelta.removedValidators[i], Constants.DEFAULT_STAKE);
+        }
+    }
+
+    /// @notice Returns the current version of the contract
+    /// @return A semantic version string
+    function version() public pure returns (string memory) {
+        return "1.1.0";
     }
 
     // slither-disable-next-line unused-state,naming-convention
